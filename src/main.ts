@@ -1,3 +1,4 @@
+import { ModCallback } from "isaac-typescript-definitions";
 import { initModFeatures, isRepentogon, ModCallbackCustom, upgradeMod } from "isaacscript-common";
 import { name } from "../package.json";
 import { eidDescriptions, eidDescriptionsIta } from "./eid-descriptions";
@@ -12,6 +13,9 @@ import { Interloper } from "./items/passive/interloper";
 import { QuantumMoon } from "./items/passive/quantumMoon";
 import { TheStranger } from "./items/passive/theStranger";
 import { TimberHearth } from "./items/passive/timberHearth";
+
+let renderWarningText = false;
+let warningFramesLeft = 0;
 
 const modFeatures = [
   TimberHearth,
@@ -35,6 +39,7 @@ export function main(): void {
   initModFeatures(mod, modFeatures);
 
   mod.AddCallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED_LAST, checkRepentogon, false);
+  mod.AddCallback(ModCallback.POST_RENDER, renderWarning);
 
   if (EID) {
     // English descriptions
@@ -68,7 +73,20 @@ export function main(): void {
 function checkRepentogon() {
   if (isRepentogon()) {
     Isaac.GetPlayer().AnimateHappy()
+  } else {
+    renderWarningText = true;
+    warningFramesLeft = 2400;
   }
+}
+
+function renderWarning() {
+  if (!renderWarningText) {return;}
+  if (warningFramesLeft <= 0) {
+    renderWarningText = false;
+    return;
+  }
+  Isaac.RenderScaledText("PLEASE INSTALL REPENTOGON AND RESTART THE GAME\nSome features of Echoes of the Basement won't function\nproperly without it.", 100, 100, 1.2, 1.2, 255, 0, 0, 255);
+  warningFramesLeft--;
 }
 
 
