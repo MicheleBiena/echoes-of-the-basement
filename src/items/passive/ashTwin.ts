@@ -40,7 +40,7 @@ function addHeartContainerForCharacter(player: EntityPlayer) {
 
     case PlayerType.KEEPER:
     case PlayerType.KEEPER_B: {
-      for (let i = 0; i < 5; i++) {
+      for (const _ of $range(0, 5)) {
         spawn(
           EntityType.PICKUP,
           PickupVariant.COIN,
@@ -85,25 +85,24 @@ export class AshTwin extends ModFeature {
   private milestoneReached = 0;
   private hasItem = false;
 
+  // Resets milestones at new floor.
   @CallbackCustom(ModCallbackCustom.POST_NEW_LEVEL_REORDERED)
   postNewLevel(): void {
     this.roomClearCount = 0;
     this.milestoneReached = 0;
   }
 
-  @Callback(ModCallback.POST_PLAYER_INIT)
+  // Resets everything at new game.
+  @CallbackCustom(ModCallbackCustom.POST_PLAYER_INIT_FIRST)
   postPlayerInit(): void {
     this.roomClearCount = 0;
     this.milestoneReached = 0;
     this.hasItem = false;
   }
 
-  @CallbackCustom(ModCallbackCustom.POST_ROOM_CLEAR_CHANGED)
-  onRoomClearChanged(isCleared: boolean): void {
-    if (!isCleared || !this.hasItem) {
-      return;
-    }
-
+  // When a room clears -> +1 to count.
+  @CallbackCustom(ModCallbackCustom.POST_ROOM_CLEAR_CHANGED, true)
+  onRoomClearChanged(): void {
     this.roomClearCount++;
     this.checkMilestones();
   }
@@ -114,22 +113,27 @@ export class AshTwin extends ModFeature {
     this.hasItem = player.HasCollectible(ASH_TWIN);
   }
 
-  @Callback(ModCallback.POST_GAME_STARTED)
+  // Resets at new game state.
+  @CallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED, false)
   postGameStarted(): void {
     this.roomClearCount = 0;
     this.milestoneReached = 0;
   }
 
   private checkMilestones(): void {
-    if (this.milestoneReached < 1 && this.roomClearCount >= MILESTONE_1) {
+    if (!this.hasItem) {
+      return;
+    }
+
+    if (this.milestoneReached === 0 && this.roomClearCount >= MILESTONE_1) {
       this.applyMilestone(0);
       this.milestoneReached = 1;
     }
-    if (this.milestoneReached < 2 && this.roomClearCount >= MILESTONE_2) {
+    if (this.milestoneReached === 1 && this.roomClearCount >= MILESTONE_2) {
       this.applyMilestone(1);
       this.milestoneReached = 2;
     }
-    if (this.milestoneReached < 3 && this.roomClearCount >= MILESTONE_3) {
+    if (this.milestoneReached === 2 && this.roomClearCount >= MILESTONE_3) {
       this.applyMilestone(2);
       this.milestoneReached = 3;
     }

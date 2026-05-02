@@ -1,0 +1,3 @@
+<costumes anm2root="gfx/">
+  <costume id="11" anm2path="characters/hearthian_spacesuit.anm2" type="passive" />
+</costumes>

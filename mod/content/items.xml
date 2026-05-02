@@ -1,0 +1,47 @@
+<items gfxroot="gfx/items/" version="1">
+  <passive
+    description="The adventure begins here."
+    name="Timber Hearth"
+    gfx="timber_hearth.png"
+    quality="3" />
+  <familiar
+    name="The Attlerock"
+    description="A shielding orbit."
+    quality="2"
+    cache="familiars"
+    tags="offensive"
+    gfx="the_attlerock.png" />
+  <passive
+    name="Ash Twin"
+    description="The sands recede."
+    gfx="ash_twin.png"
+    quality="2" />
+  <passive
+    name="Ember Twin"
+    description="Spiky Shots"
+    gfx="ember_twin.png" />
+  <passive name="Brittle Hollow"
+    description="It crumbles"
+    gfx="brittle_hollow.png" />
+  <passive name="Giant's Deep"
+    description="Tornado"
+    gfx="giants_deep.png" />
+  <passive name="Dark Bramble"
+    description="Don't make a noise!"
+    gfx="dark_bramble.png" />
+  <passive name="Quantum Moon"
+    description="I swear it was here!"
+    gfx="quantum_moon.png" />
+  <passive name="Interloper"
+    description="Plasma core"
+    gfx="interloper.png" />
+  <passive name="The Stranger"
+    description="Sweet Dreams"
+    gfx="" />
+  <passive
+    name="Hearthian Spacesuit"
+    description="The smell of pine trees along the way."
+    gfx="hearthian_spacesuit.png"
+    quality="3" />
+
+</items>

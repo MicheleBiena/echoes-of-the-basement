@@ -28,7 +28,7 @@ function getRandomRoomPosition(): Vector {
 function healForCharacter(player: EntityPlayer): void {
   switch (player.GetPlayerType()) {
     case PlayerType.LOST:
-    case PlayerType.LOST_B:
+    case PlayerType.LOST_B: {
       spawn(
         EntityType.PICKUP,
         PickupVariant.CARD,
@@ -37,33 +37,39 @@ function healForCharacter(player: EntityPlayer): void {
         Vector(0, 0),
       );
       break;
+    }
 
     case PlayerType.KEEPER:
-    case PlayerType.KEEPER_B:
+    case PlayerType.KEEPER_B: {
       for (let i = 0; i < 2; i++) {
         spawn(EntityType.PICKUP, PickupVariant.COIN, 2, getRandomRoomPosition(), Vector(0,0));
       }
       break;
+    }
 
-    case PlayerType.BETHANY:
+    case PlayerType.BETHANY: {
       player.AddSoulCharge(2);
       break;
+    }
 
-    case PlayerType.BETHANY_B:
+    case PlayerType.BETHANY_B: {
       player.AddBloodCharge(2);
       break;
+    }
 
-    case PlayerType.BLUE_BABY:
+    case PlayerType.BLUE_BABY: {
       player.AddSoulHearts(2);
       break;
+    }
 
-    default:
+    default: {
       if (player.GetHearts() > 0) {
         player.AddHearts(999);
       } else {
         player.AddSoulHearts(2);
       }
       break;
+    }
   }
 }
 

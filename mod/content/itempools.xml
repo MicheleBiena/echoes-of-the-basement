@@ -1,0 +1,17 @@
+<ItemPools>
+  <Pool Name="treasure">
+    <Item Name="Hearthian Spacesuit" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+  </Pool>
+  <Pool Name="planetarium">
+    <Item Name="Timber Hearth" Weight="1" />
+    <Item Name="The Attlerock" Weight="1" />
+    <Item Name="Ash Twin" Weight="1" />
+    <Item Name="Ember Twin" Weight="1" />
+    <Item Name="Brittle Hollow" Weight="1" />
+    <Item Name="Giant's Deep" Weight="1" />
+    <Item Name="Dark Bramble" Weight="1" />
+    <Item Name="Quantum Moon" Weight="1" />
+    <Item Name="Interloper" Weight="1" />
+    <Item Name="The Stranger" Weight="1" />
+  </Pool>
+</ItemPools>

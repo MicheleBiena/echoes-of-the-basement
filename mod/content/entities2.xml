@@ -1,0 +1,4 @@
+<entities anm2root="gfx/" version="5">
+  <entity name="The Attlerock" id="3" anm2path="familiar_attlerock.anm2" collisionMass="3"
+    collisionRadius="13" friction="1" shadowSize="11" tags="cansacrifice" />
+</entities>

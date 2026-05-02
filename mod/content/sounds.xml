@@ -1,0 +1,6 @@
+<sounds root="sfx/">
+  <sound name="Timber Hearth Guitar">
+    <sample weight="1" path="timber_hearth_guitar.wav" />
+    <sample weight="1" path="timber_hearth_guitar_muffled.wav" />
+  </sound>
+</sounds>
