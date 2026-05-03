@@ -28,7 +28,6 @@ const modFeatures = [
   QuantumMoon,
   Interloper,
   TheStranger,
-  HearthianSpacesuit
 ] as const;
 
 
@@ -37,6 +36,7 @@ export function main(): void {
   const baseMod = RegisterMod(name, 1);
   const mod = upgradeMod(baseMod);
   initModFeatures(mod, modFeatures);
+  new HearthianSpacesuit(mod);
 
   mod.AddCallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED_LAST, checkRepentogon, false);
   mod.AddCallback(ModCallback.POST_RENDER, renderWarning);

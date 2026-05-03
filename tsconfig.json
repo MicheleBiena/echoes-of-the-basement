@@ -9,7 +9,7 @@
     "complete-tsconfig/tsconfig.base.json",
 
     // https://github.com/IsaacScript/isaacscript/blob/main/packages/isaacscript-tsconfig/tsconfig.mod.json
-    "isaacscript-tsconfig/tsconfig.mod.json",
+    "isaacscript-tsconfig/tsconfig.mod.json"
   ],
 
   // TypeScriptToLua settings
@@ -22,7 +22,7 @@
       { "name": "isaacscript/plugins/addIsaacScriptCommentHeader.cjs" },
 
       // A plugin to make enums safe from global variables.
-      { "name": "isaacscript/plugins/noExtendedEnums.cjs" },
+      { "name": "isaacscript/plugins/noExtendedEnums.cjs" }
 
       // Uncomment this and recompile the mod to enable crash debugging, which will tell you the
       // exact line of the mod that is causing the crash. For more information, read the comment at
@@ -31,11 +31,12 @@
       // { "name": "isaacscript/plugins/addCrashDebugStatements.cjs" },
     ],
     "noHeader": true,
-    "noImplicitGlobalVariables": true,
+    "noImplicitGlobalVariables": true
   },
 
   "compilerOptions": {
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "6.0",
+    "types": ["isaac-typescript-definitions-repentogon"]
   },
 
   // IsaacScript settings
@@ -43,6 +44,6 @@
     // A list of objects that represent the custom stages that are in your mod, if any. You can
     // safely delete this section if you do not have any custom stages. See:
     // https://isaacscript.github.io/main/custom-stages
-    "customStages": [],
-  },
+    "customStages": []
+  }
 }
