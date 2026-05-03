@@ -1,7 +1,17 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable no-new */
 import { ModCallback } from "isaac-typescript-definitions";
 import { initModFeatures, isRepentogon, ModCallbackCustom, upgradeMod } from "isaacscript-common";
 import { name } from "../package.json";
 import { eidDescriptions, eidDescriptionsIta } from "./eid-descriptions";
+import { ChertDrums } from "./items/active/chertDrums";
+import { EskerWhistle } from "./items/active/eskerWhistle";
+import { FeldsparHarmonica } from "./items/active/feldsparHarmonica";
+import { GabbroFlute } from "./items/active/gabbroFlute";
+import { RiebeckBanjo } from "./items/active/riebeckBanjo";
+import { SolanumKeyboard } from "./items/active/solanumKeyboard";
+import { ThePrisonerTheremin } from "./items/active/thePrisonerTheremin";
 import { AshTwin } from "./items/passive/ashTwin";
 import { Attlerock } from "./items/passive/attlerock";
 import { BrittleHollow } from "./items/passive/brittleHollow";
@@ -13,6 +23,7 @@ import { Interloper } from "./items/passive/interloper";
 import { QuantumMoon } from "./items/passive/quantumMoon";
 import { TheStranger } from "./items/passive/theStranger";
 import { TimberHearth } from "./items/passive/timberHearth";
+
 
 let renderWarningText = false;
 let warningFramesLeft = 0;
@@ -28,6 +39,13 @@ const modFeatures = [
   QuantumMoon,
   Interloper,
   TheStranger,
+  FeldsparHarmonica,
+  ChertDrums,
+  RiebeckBanjo,
+  GabbroFlute,
+  SolanumKeyboard,
+  EskerWhistle,
+  ThePrisonerTheremin,
 ] as const;
 
 

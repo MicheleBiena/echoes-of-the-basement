@@ -44,4 +44,33 @@
     gfx="hearthian_spacesuit.png"
     quality="3" />
 
+  <active name="Feldspar's Harmonica"
+    description="Placeholder - Feldspar's Harmonica"
+    gfx="feldspar_harmonica.png"
+    maxcharges="1" />
+  <active name="Chert's Drums"
+    description="Placeholder - Chert's Drums"
+    gfx="chert_drums.png"
+    maxcharges="1" />
+  <active name="Riebeck's Banjo"
+    description="Placeholder - Riebeck's Banjo"
+    gfx="riebeck_banjo.png"
+    maxcharges="1" />
+  <active name="Gabbro's Flute"
+    description="Placeholder - Gabbro's Flute"
+    gfx="gabbro_flute.png"
+    maxcharges="1" />
+  <active name="Solanum's Keyboard"
+    description="Placeholder - Solanum's Keyboard"
+    gfx="solanum_keyboard.png"
+    maxcharges="1" />
+  <active name="Esker's Whistle"
+    description="Placeholder - Esker's Whistle"
+    gfx="esker_whistle.png"
+    maxcharges="1" />
+  <active name="The Prisoner's Theremin"
+    description="Placeholder - The Prisoner's Theremin"
+    gfx="the_prisoner_theremin.png"
+    maxcharges="1" />
+
 </items>

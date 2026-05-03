@@ -1,0 +1,40 @@
+*** PASSIVI ***
+
+Timber Hearth = Falò a ogni piano di cura / ricarica.
+The Attlerock = Familiar che assorbe proiettili e li rispara.
+Ash Twin = Ogni stanza pulita fa scendere un po' di sabbia.
+Ogni 3 stanze si attiva un effetto visivo (clessidra a schermo intero)
+e il messaggio "Le sabbie si diradano...".
+
+A 3 stanze: +0.3 danno (la sabbia ritira, prime torri emergono).
+A 6 stanze: +0.2 tears rate e lacrime diventano homing
+(teleporters attivi, vedi i percorsi).
+A 9 stanze: +1 cuore rosso pieno (la sabbia si è completamente ritirata).
+
+Il contatore si resetta al cambio piano. Il cuore ottenuto a 9 stanze invece
+persiste tra i piani, come i ricordi del loop temporale.
+Se un piano ha meno di 9 stanze, il cuore non si ottiene — è un premio raro.
+Il bonus permanente accumulato è +0.1 danno per ogni cuore guadagnato,
+un piccolo ricordo che il giocatore porta con sé ad ogni loop.
+
+Ember Twin = "Erosione" dei nemici, 1 danno a tick.
+Brittle Hollow = Bassa probabilità di generare buchi neri sotto i nemici,
+che fanno anche esplodere rocce nei dintorni.
+Giants Deep = Lacrime rimbalzanti + elettriche.
+Dark Bramble = In ogni stanza uncleared, viene generato al centro un teleport,
+che trasporta il giocatore in un punto casuale della stanza,
+dando un buff ai danni per 2 secondi.
+Quantum Moon = Oggetti che cambiano stato quando togli lo sguardo,
+possono scomparire o cambiare tipo di oggetto.
+The Stranger = Ogni 20 secondi lacrime di ghiaccio esplodono dal giocatore verso l'esterno.
+Interloper =
+
+
+*** ATTIVI ***
+1) Feldspar's Armonica
+2) Cherts' Drums
+3) Riebeck's Banjo
+4) Gabbro's Flute
+5) Solanum's Keyboard
+6) Esker's Whistle
+7) The Prisoner's Theremin
