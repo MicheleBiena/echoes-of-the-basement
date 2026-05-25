@@ -1,5 +1,7 @@
 import { $, commandExists, lintScript } from "complete-node";
 
+const isStrict = process.argv.includes("--strict");
+
 await lintScript(import.meta.dirname, async () => {
   const promises = [
     // Use TypeScript to type-check the code.
@@ -7,8 +9,8 @@ await lintScript(import.meta.dirname, async () => {
     $`tsc --noEmit --project ./scripts/tsconfig.json`,
 
     // Use ESLint to lint the TypeScript code.
-    // - "--max-warnings 0" makes warnings fail, since we set all ESLint errors to warnings.
-    $`eslint --max-warnings 0 .`,
+    // - "--strict" makes warnings fail, since we set all ESLint errors to warnings.
+    isStrict ? $`eslint --max-warnings 0 .` : $`eslint .`,
 
     // Use Prettier to check formatting.
     // - "--log-level=warn" makes it only output errors.

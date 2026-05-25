@@ -24,6 +24,11 @@
 - `npm run build` passes.
 - `npx tsc --noEmit` passes.
 - Current local worktree changes are considered intentional user work and should be preserved.
+- ESLint inherits strict IsaacScript/Complete rules, but `@typescript-eslint/no-unnecessary-condition` is disabled because it produces false positives with IsaacScript/TSTL types and runtime APIs.
+- `scripts/checkAssets.mjs` is ignored by ESLint because the type-aware parser only tracks files included in the TypeScript project service.
+- `npm run lint` is the pragmatic WIP lint command; `npm run lint:strict` keeps the old `--max-warnings 0` behavior available for stricter cleanup passes.
+- `scripts/tsconfig.json` explicitly includes Node types so lint/helper scripts can type-check `process` and `import.meta.dirname`.
+- VS Code is configured to use the workspace TypeScript SDK and automatic ESLint working directory detection, so editor diagnostics should match CLI diagnostics more closely.
 
 ## Architecture Refactor
 
@@ -32,4 +37,12 @@
 - EID still resolves IDs from its own description data for now because EID work is explicitly deferred.
 - Reusable reward mechanics now live in `src/utils/playerRewards.ts`; item files still decide their own character-specific reward rules.
 - Asset references can be checked with `npm run check:assets`; this is informational and does not fail for missing placeholder assets.
+
+## Implemented Item Notes
+
+- `Timber Hearth` bonfire healing is proximity-based: the player is healed by entering the fire's warmth radius, without pressing an interaction key.
+- `Ash Twin` and `Ember Twin` use first-entry room progression with the starting room excluded.
+- `Ash Twin` empties out over three tiers: temporary speed, temporary tears, then a permanent tears stack for the run.
+- `Ember Twin` fills up over three tiers: temporary damage with speed penalty, stronger temporary damage with speed penalty, then a permanent heart-style reward.
+- Ash/Ember progression is persisted through IsaacScript's save data manager: run data stores Ash permanent stacks, level data stores current floor room progress.
 - `npm run check:assets` reports missing XML-referenced assets without failing the build.

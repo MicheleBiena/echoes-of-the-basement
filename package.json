@@ -15,6 +15,7 @@
     "build": "tstl",
     "check:assets": "node ./scripts/checkAssets.mjs",
     "lint": "tsx ./scripts/lint.ts",
+    "lint:strict": "tsx ./scripts/lint.ts --strict",
     "nuke": "isaacscript nuke",
     "publish": "isaacscript publish",
     "start": "isaacscript monitor",

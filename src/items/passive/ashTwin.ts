@@ -1,152 +1,143 @@
+import { CacheFlag, ModCallback } from "isaac-typescript-definitions";
 import {
-  CoinSubType,
-  ModCallback,
-  PlayerType,
-  TearFlag,
-} from "isaac-typescript-definitions";
-import {
-  addFlag,
+  addTearsStat,
   Callback,
   CallbackCustom,
   ModCallbackCustom,
   ModFeature,
 } from "isaacscript-common";
-import { ITEM_IDS } from "../itemRegistry";
+import type { RoomTierProgressState } from "../../utils/roomTierProgress";
 import {
-  spawnCoinAtRandomRoomPosition,
-  spawnHolyCardAtRandomRoomPosition,
-} from "../../utils/playerRewards";
+  newRoomTierProgressState,
+  RoomTierProgress,
+} from "../../utils/roomTierProgress";
+import { ITEM_IDS } from "../itemRegistry";
 
-function addHeartContainerForCharacter(player: EntityPlayer) {
-  switch (player.GetPlayerType()) {
-    case PlayerType.LOST:
-    case PlayerType.LOST_B: {
-      spawnHolyCardAtRandomRoomPosition();
-      break;
-    }
+const { ASH_TWIN } = ITEM_IDS;
 
-    case PlayerType.KEEPER:
-    case PlayerType.KEEPER_B: {
-      for (const _ of $range(0, 5)) {
-        spawnCoinAtRandomRoomPosition(CoinSubType.NICKEL);
-      }
-      break;
-    }
+const TIER_1_ROOMS = 3;
+const TIER_2_ROOMS = 6;
+const TIER_3_ROOMS = 9;
+const TIER_THRESHOLDS = [TIER_1_ROOMS, TIER_2_ROOMS, TIER_3_ROOMS] as const;
 
-    case PlayerType.BETHANY: {
-      player.AddSoulCharge(3);
-      break;
-    }
+const TIER_1_SPEED_BONUS = 0.12;
+const TIER_2_TEARS_BONUS = 0.5;
+const PERMANENT_TEARS_BONUS = 0.15;
 
-    case PlayerType.BETHANY_B: {
-      player.AddBloodCharge(3);
-      break;
-    }
-
-    case PlayerType.BLUE_BABY: {
-      player.AddSoulHearts(2);
-      break;
-    }
-
-    default: {
-      player.AddMaxHearts(2, true);
-      break;
-    }
-  }
+interface AshTwinSaveData {
+  run: {
+    permanentTearStacks: int;
+  };
+  level: {
+    progress: RoomTierProgressState;
+  };
 }
 
-const ASH_TWIN = ITEM_IDS.ASH_TWIN;
-
-const MILESTONE_1 = 3;
-const MILESTONE_2 = 6;
-const MILESTONE_3 = 9;
-
 export class AshTwin extends ModFeature {
-  private roomClearCount = 0;
-  private milestoneReached = 0;
-  private hasItem = false;
+  public v: AshTwinSaveData = {
+    run: {
+      permanentTearStacks: 0,
+    },
+    level: {
+      progress: newRoomTierProgressState(),
+    },
+  };
 
-  // Resets milestones at new floor.
+  private readonly getProgressState = (): RoomTierProgressState =>
+    this.v.level.progress;
+
+  private readonly progress = new RoomTierProgress(
+    TIER_THRESHOLDS,
+    this.getProgressState,
+  );
+
   @CallbackCustom(ModCallbackCustom.POST_NEW_LEVEL_REORDERED)
   postNewLevel(): void {
-    this.roomClearCount = 0;
-    this.milestoneReached = 0;
+    this.progress.resetFloor();
+    this.refreshStats();
   }
 
-  // Resets everything at new game.
-  @CallbackCustom(ModCallbackCustom.POST_PLAYER_INIT_FIRST)
-  postPlayerInit(): void {
-    this.roomClearCount = 0;
-    this.milestoneReached = 0;
-    this.hasItem = false;
+  @CallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED, undefined)
+  postGameStarted(isContinued: boolean): void {
+    if (!isContinued) {
+      this.progress.resetRun();
+      this.v.run.permanentTearStacks = 0;
+    }
+    this.refreshStats();
   }
 
-  // When a room clears -> +1 to count.
-  @CallbackCustom(ModCallbackCustom.POST_ROOM_CLEAR_CHANGED, true)
-  onRoomClearChanged(): void {
-    this.roomClearCount++;
-    this.checkMilestones();
-  }
-
-  @Callback(ModCallback.POST_UPDATE)
-  postUpdate(): void {
+  @CallbackCustom(ModCallbackCustom.POST_NEW_ROOM_REORDERED)
+  postNewRoom(): void {
     const player = Isaac.GetPlayer();
-    this.hasItem = player.HasCollectible(ASH_TWIN);
-  }
-
-  // Resets at new game state.
-  @CallbackCustom(ModCallbackCustom.POST_GAME_STARTED_REORDERED, false)
-  postGameStarted(): void {
-    this.roomClearCount = 0;
-    this.milestoneReached = 0;
-  }
-
-  private checkMilestones(): void {
-    if (!this.hasItem) {
+    if (!player.HasCollectible(ASH_TWIN)) {
       return;
     }
 
-    if (this.milestoneReached === 0 && this.roomClearCount >= MILESTONE_1) {
-      this.applyMilestone(0);
-      this.milestoneReached = 1;
+    const newTier = this.progress.recordCurrentRoom();
+    if (newTier === undefined) {
+      return;
     }
-    if (this.milestoneReached === 1 && this.roomClearCount >= MILESTONE_2) {
-      this.applyMilestone(1);
-      this.milestoneReached = 2;
+
+    if (newTier === 3) {
+      this.v.run.permanentTearStacks++;
     }
-    if (this.milestoneReached === 2 && this.roomClearCount >= MILESTONE_3) {
-      this.applyMilestone(2);
-      this.milestoneReached = 3;
+
+    this.refreshStats();
+    player.AnimateHappy();
+    Game().GetHUD().ShowItemText("Ash Twin", getTierMessage(newTier));
+  }
+
+  @Callback(ModCallback.EVALUATE_CACHE, CacheFlag.SPEED)
+  evaluateSpeed(player: EntityPlayer): void {
+    if (!player.HasCollectible(ASH_TWIN) || this.progress.getTier() < 1) {
+      return;
+    }
+
+    player.MoveSpeed += TIER_1_SPEED_BONUS;
+  }
+
+  @Callback(ModCallback.EVALUATE_CACHE, CacheFlag.FIRE_DELAY)
+  evaluateFireDelay(player: EntityPlayer): void {
+    if (!player.HasCollectible(ASH_TWIN)) {
+      return;
+    }
+
+    if (this.progress.getTier() >= 2) {
+      addTearsStat(player, TIER_2_TEARS_BONUS);
+    }
+
+    if (this.v.run.permanentTearStacks > 0) {
+      addTearsStat(
+        player,
+        this.v.run.permanentTearStacks * PERMANENT_TEARS_BONUS,
+      );
     }
   }
 
-  private applyMilestone(index: number): void {
+  private refreshStats(): void {
     const player = Isaac.GetPlayer();
+    player.AddCacheFlags(CacheFlag.SPEED);
+    player.AddCacheFlags(CacheFlag.FIRE_DELAY);
+    player.EvaluateItems();
+  }
+}
 
-    switch (index) {
-      case 0: {
-        player.Damage += 0.3;
-
-        break;
-      }
-
-      case 1: {
-        const newFireDelay = player.FireDelay - 3;
-        player.FireDelay = Math.max(newFireDelay, 0);
-        player.TearFlags = addFlag(player.TearFlags, TearFlag.HOMING);
-
-        break;
-      }
-
-      case 2: {
-        addHeartContainerForCharacter(player);
-
-        break;
-      }
-      // No default
+function getTierMessage(tier: int): string {
+  switch (tier) {
+    case 1: {
+      return "The sands begin to recede...";
     }
 
-    player.AnimateHappy();
-    Game().GetHUD().ShowItemText("Ash Twin", "The sands thin out...");
+    case 2: {
+      return "The path opens below...";
+    }
+
+    case 3: {
+      return "The tower stands clear.";
+    }
+
+    default: {
+      return "The sands shift...";
+    }
   }
 }

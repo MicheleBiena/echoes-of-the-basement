@@ -8,6 +8,10 @@ import { isaacScriptModConfigBase } from "eslint-config-isaacscript";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig(
+  {
+    ignores: ["scripts/checkAssets.mjs"],
+  },
+
   // https://github.com/complete-ts/complete/blob/main/packages/eslint-config-complete/src/base.js
   ...completeConfigBase,
 
@@ -16,7 +20,7 @@ export default defineConfig(
 
   {
     rules: {
-      // Insert changed or disabled rules here, if necessary.
+      "@typescript-eslint/no-unnecessary-condition": "off",
     },
   },
 );

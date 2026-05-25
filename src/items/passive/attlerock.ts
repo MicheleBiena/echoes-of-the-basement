@@ -20,7 +20,7 @@ import {
 } from "isaacscript-common";
 import { ITEM_IDS } from "../itemRegistry";
 
-const THE_ATTLEROCK = ITEM_IDS.THE_ATTLEROCK;
+const { THE_ATTLEROCK } = ITEM_IDS;
 const CONFIG_ATTLEROCK = Isaac.GetItemConfig().GetCollectible(THE_ATTLEROCK);
 const ATTLEROCK_VARIANT = Isaac.GetEntityVariantByName(
   "The Attlerock",
@@ -57,8 +57,8 @@ export class Attlerock extends ModFeature {
   evaluateCache(player: EntityPlayer): void {
     const effects = player.GetEffects();
     const count =
-      effects.GetCollectibleEffectNum(THE_ATTLEROCK) +
-      player.GetCollectibleNum(THE_ATTLEROCK);
+      effects.GetCollectibleEffectNum(THE_ATTLEROCK)
+      + player.GetCollectibleNum(THE_ATTLEROCK);
 
     const rng = RNG();
     const seed = getRandomSeed();
@@ -122,9 +122,9 @@ export class Attlerock extends ModFeature {
   private triggerBurst(): void {
     this.burstQueue = this.absorbedCount;
     this.burstDamage =
-      BASE_TEAR_DAMAGE +
-      Math.max(0, this.absorbedCount - BURST_THRESHOLD) *
-        BONUS_DAMAGE_PER_PROJECTILE;
+      BASE_TEAR_DAMAGE
+      + Math.max(0, this.absorbedCount - BURST_THRESHOLD)
+        * BONUS_DAMAGE_PER_PROJECTILE;
     this.burstCooldown = 0;
     this.absorbedCount = 0;
   }

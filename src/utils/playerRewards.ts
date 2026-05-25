@@ -1,8 +1,9 @@
+import type { CoinSubType } from "isaac-typescript-definitions";
 import {
   CardType,
-  type CoinSubType,
+
   EntityType,
-  PickupVariant,
+  PickupVariant
 } from "isaac-typescript-definitions";
 import { spawn } from "isaacscript-common";
 

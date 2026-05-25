@@ -46,6 +46,7 @@
   // Change all ESLint errors to have yellow squigglies instead of red squigglies.
   // https://www.joshuakgoldberg.com/blog/if-i-wrote-a-linter-part-2-developer-experience/#only-errors
   "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
+  "eslint.workingDirectories": [{ "mode": "auto" }],
 
   // -----------------
   // Language settings
@@ -65,6 +66,7 @@
   // Show TypeScript errors for files that don't happen to be currently open, which makes TypeScript
   // work similar to other compiled languages like Golang or Rust.
   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
 
   // Automatically run the formatter when certain files are saved. We intentionally do not group
   // languages together because of this bug: https://github.com/microsoft/vscode/issues/168411
