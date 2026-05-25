@@ -18,8 +18,9 @@ import {
   setSeed,
   spawnTear,
 } from "isaacscript-common";
+import { ITEM_IDS } from "../itemRegistry";
 
-const THE_ATTLEROCK = Isaac.GetItemIdByName("The Attlerock");
+const THE_ATTLEROCK = ITEM_IDS.THE_ATTLEROCK;
 const CONFIG_ATTLEROCK = Isaac.GetItemConfig().GetCollectible(THE_ATTLEROCK);
 const ATTLEROCK_VARIANT = Isaac.GetEntityVariantByName(
   "The Attlerock",

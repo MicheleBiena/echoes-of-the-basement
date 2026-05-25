@@ -17,17 +17,23 @@ Se un piano ha meno di 9 stanze, il cuore non si ottiene — è un premio raro.
 Il bonus permanente accumulato è +0.1 danno per ogni cuore guadagnato,
 un piccolo ricordo che il giocatore porta con sé ad ogni loop.
 
+Voglio farli complementari, uno potenzia tear rate e speed
+l'altro diminuisce la speed, ma potenzia danno (tipo)
+
 Ember Twin = "Erosione" dei nemici, 1 danno a tick.
 Brittle Hollow = Bassa probabilità di generare buchi neri sotto i nemici,
-che fanno anche esplodere rocce nei dintorni.
-Giants Deep = Lacrime rimbalzanti + elettriche.
-Dark Bramble = In ogni stanza uncleared, viene generato al centro un teleport,
-che trasporta il giocatore in un punto casuale della stanza,
-dando un buff ai danni per 2 secondi.
-Quantum Moon = Oggetti che cambiano stato quando togli lo sguardo,
+che fanno anche esplodere rocce nei dintorni. Non scala per fortuna, è unione fra ocular rift
+e sulfuric acid. In alternativa rocce di gideon che compaiono da fuori schermo, attirate verso un punto
+e danneggiano nemici.
+Giants Deep = Lacrime rimbalzanti sulle pareti, a forma di ciclone, uno in senso orario
+uno in senso antiorario (respingono / attraggono)
+Dark Bramble = Tipo dark esau, ma con un bel bonus. Dopo che compare hai tot tempo per completare
+il piano, allo scadere crepi. Il bonus è doppi pickup come Damocle.
+Quantum Moon = Oggetti che cambiano stato quando cambi stanza.
 possono scomparire o cambiare tipo di oggetto.
-The Stranger = Ogni 20 secondi lacrime di ghiaccio esplodono dal giocatore verso l'esterno.
-Interloper =
+The Stranger =
+Interloper = Ogni 20 secondi lacrime di ghiaccio esplodono dal giocatore verso l'esterno che fanno
+dot di veleno che rallenta.
 
 
 *** ATTIVI ***

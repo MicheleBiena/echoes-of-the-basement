@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import {
-  CardType,
+  CoinSubType,
   EntityType,
   GridEntityType,
   LevelStage,
   ModCallback,
-  PickupVariant,
   PlayerType,
 } from "isaac-typescript-definitions";
 import {
@@ -15,48 +16,33 @@ import {
   ModFeature,
   spawn,
 } from "isaacscript-common";
-
-function getRandomRoomPosition(): Vector {
-  const room = Game().GetRoom();
-  const topLeft = room.GetTopLeftPos();
-  const bottomRight = room.GetBottomRightPos();
-  const x = topLeft.X + Math.random() * (bottomRight.X - topLeft.X);
-  const y = topLeft.Y + Math.random() * (bottomRight.Y - topLeft.Y);
-  return Vector(x, y);
-}
+import { ITEM_IDS } from "../itemRegistry";
+import {
+  spawnCoinAtRandomRoomPosition,
+  spawnHolyCardAtRandomRoomPosition,
+} from "../../utils/playerRewards";
 
 function healForCharacter(player: EntityPlayer): void {
   switch (player.GetPlayerType()) {
     case PlayerType.LOST:
     case PlayerType.LOST_B: {
-      spawn(
-        EntityType.PICKUP,
-        PickupVariant.CARD,
-        CardType.HOLY,
-        getRandomRoomPosition(),
-        Vector(0, 0),
-      );
+      // TODO: Balance this.
+      spawnHolyCardAtRandomRoomPosition();
       break;
     }
 
     case PlayerType.KEEPER:
     case PlayerType.KEEPER_B: {
       for (let i = 0; i < 2; i++) {
-        spawn(EntityType.PICKUP, PickupVariant.COIN, 2, getRandomRoomPosition(), Vector(0,0));
+        // TODO: Maybe a random coin.
+        spawnCoinAtRandomRoomPosition(CoinSubType.NICKEL);
       }
       break;
     }
 
-    case PlayerType.BETHANY: {
-      player.AddSoulCharge(2);
-      break;
-    }
-
-    case PlayerType.BETHANY_B: {
-      player.AddBloodCharge(2);
-      break;
-    }
-
+    case PlayerType.JUDAS_B:
+    case PlayerType.BETHANY_B:
+    case PlayerType.BLUE_BABY_B:
     case PlayerType.BLUE_BABY: {
       player.AddSoulHearts(2);
       break;
@@ -65,17 +51,15 @@ function healForCharacter(player: EntityPlayer): void {
     default: {
       if (player.GetHearts() > 0) {
         player.AddHearts(999);
-      } else {
-        player.AddSoulHearts(2);
-      }
-      break;
-    }
+
+    } break;
   }
+}
 }
 
 const sound = SFXManager();
 const music = MusicManager();
-const TIMBER_HEARTH = Isaac.GetItemIdByName("Timber Hearth");
+const TIMBER_HEARTH = ITEM_IDS.TIMBER_HEARTH;
 const TIMBER_HEARTH_FIREPLACE_VARIANT = 9500;
 const ROOM_CENTER_OFFSET = 20;
 let isActiveBonfire = false;
@@ -141,6 +125,8 @@ export class TimberHearth extends ModFeature {
       isActiveBonfire = false;
 
       const player = Isaac.GetPlayer();
+
+      // TODO: Don't do anything if jacob_b .
       player.FullCharge();
       healForCharacter(player);
 

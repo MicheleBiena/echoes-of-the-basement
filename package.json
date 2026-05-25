@@ -13,6 +13,7 @@
   "type": "module",
   "scripts": {
     "build": "tstl",
+    "check:assets": "node ./scripts/checkAssets.mjs",
     "lint": "tsx ./scripts/lint.ts",
     "nuke": "isaacscript nuke",
     "publish": "isaacscript publish",

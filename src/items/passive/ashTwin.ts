@@ -1,8 +1,6 @@
 import {
-  CardType,
-  EntityType,
+  CoinSubType,
   ModCallback,
-  PickupVariant,
   PlayerType,
   TearFlag,
 } from "isaac-typescript-definitions";
@@ -12,42 +10,25 @@ import {
   CallbackCustom,
   ModCallbackCustom,
   ModFeature,
-  spawn,
 } from "isaacscript-common";
-
-function getRandomRoomPosition(): Vector {
-  const room = Game().GetRoom();
-  const topLeft = room.GetTopLeftPos();
-  const bottomRight = room.GetBottomRightPos();
-  const x = topLeft.X + Math.random() * (bottomRight.X - topLeft.X);
-  const y = topLeft.Y + Math.random() * (bottomRight.Y - topLeft.Y);
-  return Vector(x, y);
-}
+import { ITEM_IDS } from "../itemRegistry";
+import {
+  spawnCoinAtRandomRoomPosition,
+  spawnHolyCardAtRandomRoomPosition,
+} from "../../utils/playerRewards";
 
 function addHeartContainerForCharacter(player: EntityPlayer) {
   switch (player.GetPlayerType()) {
     case PlayerType.LOST:
     case PlayerType.LOST_B: {
-      spawn(
-        EntityType.PICKUP,
-        PickupVariant.CARD,
-        CardType.HOLY,
-        getRandomRoomPosition(),
-        Vector(0, 0),
-      );
+      spawnHolyCardAtRandomRoomPosition();
       break;
     }
 
     case PlayerType.KEEPER:
     case PlayerType.KEEPER_B: {
       for (const _ of $range(0, 5)) {
-        spawn(
-          EntityType.PICKUP,
-          PickupVariant.COIN,
-          2,
-          getRandomRoomPosition(),
-          Vector(0, 0),
-        );
+        spawnCoinAtRandomRoomPosition(CoinSubType.NICKEL);
       }
       break;
     }
@@ -74,7 +55,7 @@ function addHeartContainerForCharacter(player: EntityPlayer) {
   }
 }
 
-const ASH_TWIN = Isaac.GetItemIdByName("Ash Twin");
+const ASH_TWIN = ITEM_IDS.ASH_TWIN;
 
 const MILESTONE_1 = 3;
 const MILESTONE_2 = 6;

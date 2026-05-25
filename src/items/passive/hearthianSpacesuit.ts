@@ -4,23 +4,9 @@ import type { CollectibleType } from "isaac-typescript-definitions";
 import { ItemPoolType, ModCallback } from "isaac-typescript-definitions";
 import { ModCallbackRepentogon } from "isaac-typescript-definitions-repentogon";
 import type { ModUpgraded } from "isaacscript-common";
+import { ITEM_IDS, PLANETARIUM_ITEM_IDS } from "../itemRegistry";
 
-const HEARTHIAN_SPACESUIT = Isaac.GetItemIdByName("Hearthian Spacesuit");
-
-const MOD_PLANET_ITEMS = [
-  Isaac.GetItemIdByName("Timber Hearth"),
-  Isaac.GetItemIdByName("The Attlerock"),
-  Isaac.GetItemIdByName("Ash Twin"),
-  Isaac.GetItemIdByName("Ember Twin"),
-  Isaac.GetItemIdByName("Brittle Hollow"),
-  Isaac.GetItemIdByName("Giant's Deep"),
-  Isaac.GetItemIdByName("Dark Bramble"),
-  Isaac.GetItemIdByName("Quantum Moon"),
-  Isaac.GetItemIdByName("Interloper"),
-  Isaac.GetItemIdByName("The Stranger"),
-] as const;
-
-const PLANETARIUM_FORCE_CHANCE = 100;
+const PLANETARIUM_FORCE_CHANCE = 22;
 const BASE_MOD_ITEM_CHANCE = 0.5;
 const SPACESUIT_MOD_ITEM_CHANCE = 1; // 100% for testing
 
@@ -32,7 +18,7 @@ export class HearthianSpacesuit {
       ModCallbackRepentogon.PRE_PLANETARIUM_CALCULATE_FINAL,
       (currentChance: number): number => {
         const player = Isaac.GetPlayer();
-        if (player === undefined || !player.HasCollectible(HEARTHIAN_SPACESUIT)) {
+        if (player === undefined || !player.HasCollectible(ITEM_IDS.HEARTHIAN_SPACESUIT)) {
           return currentChance;
         }
         return PLANETARIUM_FORCE_CHANCE;
@@ -52,11 +38,11 @@ export class HearthianSpacesuit {
           return undefined;
         }
 
-        const hasSpacesuit = player.HasCollectible(HEARTHIAN_SPACESUIT);
+        const hasSpacesuit = player.HasCollectible(ITEM_IDS.HEARTHIAN_SPACESUIT);
         const modItemChance = hasSpacesuit ? SPACESUIT_MOD_ITEM_CHANCE : BASE_MOD_ITEM_CHANCE;
 
         if (Math.random() < modItemChance) {
-          const availableItems = MOD_PLANET_ITEMS.filter(
+          const availableItems = PLANETARIUM_ITEM_IDS.filter(
             (itemId) => !player.HasCollectible(itemId)
           );
 
