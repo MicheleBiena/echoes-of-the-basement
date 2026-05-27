@@ -25,8 +25,15 @@ Brittle Hollow = Bassa probabilità di generare buchi neri sotto i nemici,
 che fanno anche esplodere rocce nei dintorni. Non scala per fortuna, è unione fra ocular rift
 e sulfuric acid. In alternativa rocce di gideon che compaiono da fuori schermo, attirate verso un punto
 e danneggiano nemici.
-Giants Deep = Lacrime rimbalzanti sulle pareti, a forma di ciclone, uno in senso orario
-uno in senso antiorario (respingono / attraggono)
+Giants Deep = Lacrime lentissime e rimbalzanti, visualizzate come cicloni.
+1 su 6: ciclone blu antiorario che attrae i nemici. Altrimenti, ciclone verde
+orario che li respinge. Le lacrime vere sono invisibili: resta visibile solo il ciclone.
+Il tiro e' piu' lento, ma i cicloni durano molto e possono attraversare quasi tutta
+la stanza. Raramente, con probabilita' aumentata dalla fortuna, viene sparato un
+tifone verde enorme: respinge velocemente tutti i nemici della stanza verso i muri
+e infligge un danno molto alto, circa da bomba. Il contraccolpo spinge Isaac
+all'indietro quando il tifone viene sparato, accompagnato da un forte effetto
+sonoro.
 Dark Bramble = Tipo dark esau, ma con un bel bonus. Dopo che compare hai tot tempo per completare
 il piano, allo scadere crepi. Il bonus è doppi pickup come Damocle.
 Quantum Moon = Oggetti che cambiano stato quando cambi stanza.

@@ -45,4 +45,5 @@
 - `Ash Twin` empties out over three tiers: temporary speed, temporary tears, then a permanent tears stack for the run.
 - `Ember Twin` fills up over three tiers: temporary damage with speed penalty, stronger temporary damage with speed penalty, then a permanent heart-style reward.
 - Ash/Ember progression is persisted through IsaacScript's save data manager: run data stores Ash permanent stacks, level data stores current floor room progress.
+- `Giant's Deep` currently creates slow suspended bouncing cyclone tears with controlled lifetime; each fired tear has a 1-in-6 chance to become blue attraction, otherwise it becomes green repulsion, and pushes/pulls nearby vulnerable enemies through both velocity force and direct position nudging. It also applies a fire-delay penalty and uses a dedicated `giantsDeepCyclone` effect sprite/animation that follows the underlying invisible collision tear. It has a very rare luck-scaled giant green typhoon proc that damages all vulnerable enemies in the room, pushes them hard toward walls, and knocks the firing player backward.
 - `npm run check:assets` reports missing XML-referenced assets without failing the build.

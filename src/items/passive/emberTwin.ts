@@ -185,11 +185,11 @@ function getTierMessage(tier: int): string {
     }
 
     case 2: {
-      return "The weight settles in...";
+      return "The sands continues to rise...";
     }
 
     case 3: {
-      return "The heart is buried deep.";
+      return "The sands covers everything.";
     }
 
     default: {
