@@ -21,10 +21,12 @@ Voglio farli complementari, uno potenzia tear rate e speed
 l'altro diminuisce la speed, ma potenzia danno (tipo)
 
 Ember Twin = "Erosione" dei nemici, 1 danno a tick.
-Brittle Hollow = Bassa probabilità di generare buchi neri sotto i nemici,
-che fanno anche esplodere rocce nei dintorni. Non scala per fortuna, è unione fra ocular rift
-e sulfuric acid. In alternativa rocce di gideon che compaiono da fuori schermo, attirate verso un punto
-e danneggiano nemici.
+Brittle Hollow = Bassa probabilita' fissa, non scalata dalla fortuna, di aprire
+un rift sotto un nemico colpito da una lacrima. Il rift dura poco, attira i
+nemici vicini, infligge piccoli danni periodici e frantuma le rocce esplodibili
+nelle vicinanze quando si apre. Quando nasce, richiama frammenti di roccia dai
+bordi della stanza verso il rift, come pezzi del pianeta che si staccano. Ha un
+limite di rift attivi e cooldown anti-spam.
 Giants Deep = Lacrime lentissime e rimbalzanti, visualizzate come cicloni.
 1 su 6: ciclone blu antiorario che attrae i nemici. Altrimenti, ciclone verde
 orario che li respinge. Le lacrime vere sono invisibili: resta visibile solo il ciclone.
@@ -34,8 +36,13 @@ tifone verde enorme: respinge velocemente tutti i nemici della stanza verso i mu
 e infligge un danno molto alto, circa da bomba. Il contraccolpo spinge Isaac
 all'indietro quando il tifone viene sparato, accompagnato da un forte effetto
 sonoro.
-Dark Bramble = Tipo dark esau, ma con un bel bonus. Dopo che compare hai tot tempo per completare
-il piano, allo scadere crepi. Il bonus è doppi pickup come Damocle.
+Dark Bramble = Dopo un certo tempo nel piano compare una rana pescatrice
+inarrestabile, una sorta di Dark Esau piu' lenta, che insegue Isaac in tutte le
+stanze. Se tocca Isaac, Isaac muore. Se il player ha vite multiple, la rana
+scompare per il resto del piano dopo averlo mangiato, ma il premio del piano e'
+perso. Se il player completa il piano mentre la rana e' presente e non lo ha
+mangiato, ottiene un premio grosso ancora da definire. Al piano successivo il
+ciclo ricomincia.
 Quantum Moon = Oggetti che cambiano stato quando cambi stanza.
 possono scomparire o cambiare tipo di oggetto.
 The Stranger =
