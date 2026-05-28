@@ -28,10 +28,24 @@ nelle vicinanze quando si apre. Quando nasce, richiama frammenti di roccia dai
 bordi della stanza verso il rift, come pezzi del pianeta che si staccano. Ha un
 limite di rift attivi e cooldown anti-spam.
 Giants Deep = Lacrime lentissime e rimbalzanti, visualizzate come cicloni.
-1 su 6: ciclone blu antiorario che attrae i nemici. Altrimenti, ciclone verde
-orario che li respinge. Le lacrime vere sono invisibili: resta visibile solo il ciclone.
+1 su 6: ciclone viola antiorario che attrae i nemici. Altrimenti, ciclone verde
+orario che non fa danno diretto, ma lancia violentemente i nemici che tocca nella
+direzione del tifone. Quando un nemico lanciato colpisce un muro o un elemento
+di grid, subisce danno pari al danno della lacrima. Se prima dell'impatto tocca
+altri cicloni verdi, il danno aumenta di +0.5x ogni volta, fino a un cap alto.
+Se la chain raggiunge 5 cicloni verdi toccati senza impatto, il danno viene
+inflitto comunque e il contatore si resetta.
+Il contatto diretto con i nemici viene convertito in lancio, ma la lacrima
+mantiene le normali interazioni con fuochi, cacche, rocce e sinergie da grid.
+Il danno d'impatto usa il danno corrente della lacrima quando lancia il nemico,
+quindi rispetta modificatori come danno, dimensione e distanza. All'impatto
+trasferisce anche vari effetti delle lacrime: veleno, fuoco, slow, fear, charm,
+confusion, freeze, Midas, shrink, esplosivo e chain.
+Le lacrime vere sono invisibili: resta visibile solo il ciclone.
 Il tiro e' piu' lento, ma i cicloni durano molto e possono attraversare quasi tutta
-la stanza. Raramente, con probabilita' aumentata dalla fortuna, viene sparato un
+la stanza. Per proteggere performance e leggibilita', possono esserci al massimo
+16 cicloni normali attivi; quando se ne generano altri, i piu' vecchi spariscono.
+Raramente, con probabilita' aumentata dalla fortuna, viene sparato un
 tifone verde enorme: respinge velocemente tutti i nemici della stanza verso i muri
 e infligge un danno molto alto, circa da bomba. Il contraccolpo spinge Isaac
 all'indietro quando il tifone viene sparato, accompagnato da un forte effetto

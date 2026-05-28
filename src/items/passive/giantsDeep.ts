@@ -1,8 +1,9 @@
-import type { EffectVariant } from "isaac-typescript-definitions";
 import {
   CacheFlag,
   DamageFlag,
+  EffectVariant,
   EntityType,
+  GridCollisionClass,
   ModCallback,
   SoundEffect,
   TearFlag,
@@ -15,6 +16,7 @@ import {
   getNPCs,
   getPlayers,
   getTears,
+  hasFlag,
   isActiveEnemy,
   ModCallbackCustom,
   ModFeature,
@@ -33,6 +35,28 @@ const GIANTS_DEEP_SUPER_TYPHOON_KEY =
   "echoesOfTheBasementGiantsDeepSuperTyphoon";
 const GIANTS_DEEP_SUPER_TYPHOON_BURST_DONE_KEY =
   "echoesOfTheBasementGiantsDeepSuperTyphoonBurstDone";
+const GIANTS_DEEP_REPEL_IMPACT_DAMAGE_KEY =
+  "echoesOfTheBasementGiantsDeepRepelImpactDamage";
+const GIANTS_DEEP_REPEL_LAUNCH_ID_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchID";
+const GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_X_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchDirectionX";
+const GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_Y_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchDirectionY";
+const GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchDamage";
+const GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchMultiplier";
+const GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchBounceCount";
+const GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchSourceTearSeed";
+const GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY =
+  "echoesOfTheBasementGiantsDeepRepelLaunchTearFlags";
+const GIANTS_DEEP_REPEL_LAUNCH_TEAR_HIT_PREFIX =
+  "echoesOfTheBasementGiantsDeepRepelLaunchTearHit";
+const GIANTS_DEEP_REPEL_TEAR_LAUNCH_COOLDOWN_PREFIX =
+  "echoesOfTheBasementGiantsDeepRepelTearLaunchCooldown";
 const ATTRACT_POLARITY = "attract";
 const REPEL_POLARITY = "repel";
 const GIANTS_DEEP_CYCLONE_EFFECT_VARIANT = 9501 as EffectVariant;
@@ -45,10 +69,11 @@ const CYCLONE_TEAR_HEIGHT = -12;
 const CYCLONE_FALLING_SPEED = 0;
 const CYCLONE_FALLING_ACCELERATION = 0;
 const CYCLONE_SPRITE_OFFSET = Vector(0, -8);
-const CYCLONE_TEAR_COLLISION_SIZE_MULTIPLIER = 1.2;
+const CYCLONE_TEAR_COLLISION_SIZE_MULTIPLIER = 3.2;
 const CYCLONE_MIN_VISUAL_SCALE = 0.65;
 const CYCLONE_MAX_VISUAL_SCALE = 2.2;
 const CYCLONE_LIFETIME_FRAMES = 240;
+const MAX_ACTIVE_NORMAL_CYCLONES = 16;
 const SUPER_TYPHOON_BASE_CHANCE = 0.005;
 const SUPER_TYPHOON_CHANCE_PER_LUCK = 0.0015;
 const SUPER_TYPHOON_MAX_CHANCE = 0.05;
@@ -68,16 +93,44 @@ const SUPER_TYPHOON_SHOCKWAVE_SPEED = 0.06;
 const SUPER_TYPHOON_SHOCKWAVE_DURATION = 18;
 const TEAR_RANGE_BONUS = 1600;
 const FIRE_DELAY_PENALTY = 14;
-const FORCE_RADIUS = 220;
+const FORCE_RADIUS = 190;
 const VELOCITY_FORCE_STRENGTH = 2.4;
 const POSITION_FORCE_STRENGTH = 5.5;
 const MIN_FORCE_MULTIPLIER = 0.35;
 const ENEMY_VELOCITY_DAMPING = 0.75;
 const ENEMY_POSITION_CLAMP_MARGIN = 20;
-const ATTRACT_COLOR = Color(0.35, 0.75, 1, 1);
-const REPEL_COLOR = Color(0.25, 1, 0.45, 1);
+const REPEL_LAUNCH_SPEED = 16;
+const REPEL_CHAIN_DAMAGE_MULTIPLIER_BONUS = 0.5;
+const REPEL_CHAIN_MAX_DAMAGE_MULTIPLIER = 10;
+const REPEL_CHAIN_IMPACT_BOUNCE_COUNT = 5;
+const REPEL_TEAR_RELAUNCH_COOLDOWN_FRAMES = 18;
+const REPEL_LAUNCH_GRID_SAMPLE_DISTANCE = 12;
+const REPEL_IMPACT_PARTICLE_COUNT = 5;
+const REPEL_IMPACT_PARTICLE_SPEED = 6;
+const REPEL_STATUS_DURATION_FRAMES = 90;
+const REPEL_FREEZE_DURATION_FRAMES = 45;
+const REPEL_STATUS_DAMAGE_MULTIPLIER = 0.5;
+const REPEL_CHAIN_SPLASH_RADIUS = 120;
+const REPEL_CHAIN_SPLASH_DAMAGE_MULTIPLIER = 0.35;
+const REPEL_EXPLOSIVE_SPLASH_RADIUS = 110;
+const REPEL_EXPLOSIVE_SPLASH_DAMAGE_MULTIPLIER = 0.45;
+const ATTRACT_COLOR = Color(0.62, 0.5, 0.78, 1);
+const REPEL_COLOR = Color(0.48, 0.7, 0.55, 1);
+const REPEL_SLOW_COLOR = Color(0.5, 0.7, 0.55, 1);
 
 type GiantsDeepPolarity = typeof ATTRACT_POLARITY | typeof REPEL_POLARITY;
+
+interface RepelLaunchState {
+  readonly direction: Vector;
+  readonly damage: float;
+  readonly launchID: int;
+  readonly multiplier: float;
+  readonly bounceCount: int;
+  readonly sourceTearSeed: int;
+  readonly tearFlags: BitFlags<TearFlag>;
+}
+
+let nextRepelLaunchID = 1;
 
 export class GiantsDeep extends ModFeature {
   @Callback(ModCallback.EVALUATE_CACHE, CacheFlag.TEAR_FLAG)
@@ -133,10 +186,13 @@ export class GiantsDeep extends ModFeature {
       );
       pushPlayerBackFromSuperTyphoon(player, tear);
       playSuperTyphoonSound();
+    } else if (polarity === REPEL_POLARITY) {
+      setRepelImpactDamage(tear, tear.CollisionDamage);
     }
     suspendCycloneTear(tear);
     hideCycloneTear(tear);
     spawnCycloneEffect(tear, polarity);
+    enforceActiveCycloneLimit();
   }
 
   @Callback(ModCallback.POST_TEAR_UPDATE)
@@ -158,9 +214,35 @@ export class GiantsDeep extends ModFeature {
     if (isSuperTyphoon(tear)) {
       triggerSuperTyphoonBurst(tear);
       applySuperTyphoonForce(tear);
+    } else if (polarity === ATTRACT_POLARITY) {
+      applyAttractForce(tear);
     } else {
-      applyPolarityForce(tear, polarity);
+      updateRepelCyclone(tear);
     }
+  }
+
+  @Callback(ModCallback.POST_NPC_UPDATE)
+  postNPCUpdate(npc: EntityNPC): void {
+    updateRepelLaunchedNPC(npc);
+  }
+
+  @Callback(ModCallback.PRE_TEAR_COLLISION)
+  preTearCollision(
+    tear: EntityTear,
+    collider: Entity,
+    _low: boolean,
+  ): boolean | undefined {
+    if (!isRepelCycloneTear(tear) || isSuperTyphoon(tear)) {
+      return undefined;
+    }
+
+    const npc = collider.ToNPC();
+    if (npc === undefined || !isAffectedNPC(npc)) {
+      return undefined;
+    }
+
+    launchOrBoostNPCFromRepelCyclone(tear, npc);
+    return true;
   }
 
   @Callback(ModCallback.POST_EFFECT_UPDATE, GIANTS_DEEP_CYCLONE_EFFECT_VARIANT)
@@ -356,6 +438,44 @@ function removeCycloneEffect(tear: EntityTear) {
   }
 }
 
+function enforceActiveCycloneLimit() {
+  const cycloneTears = getActiveNormalCycloneTears();
+  const extraCycloneCount = cycloneTears.length - MAX_ACTIVE_NORMAL_CYCLONES;
+
+  if (extraCycloneCount <= 0) {
+    return;
+  }
+
+  cycloneTears.sort((left, right) => right.FrameCount - left.FrameCount);
+
+  for (let i = 0; i < extraCycloneCount; i++) {
+    const cycloneTear = cycloneTears[i];
+
+    if (cycloneTear !== undefined) {
+      removeCycloneTear(cycloneTear);
+    }
+  }
+}
+
+function getActiveNormalCycloneTears() {
+  const cycloneTears: EntityTear[] = [];
+
+  for (const tear of getTears()) {
+    if (getTearPolarity(tear) === undefined || isSuperTyphoon(tear)) {
+      continue;
+    }
+
+    cycloneTears.push(tear);
+  }
+
+  return cycloneTears;
+}
+
+function removeCycloneTear(tear: EntityTear) {
+  removeCycloneEffect(tear);
+  tear.Remove();
+}
+
 function getCycloneEffect(tear: EntityTear): EntityEffect | undefined {
   const effectSeed = tear.GetData()[GIANTS_DEEP_CYCLONE_EFFECT_SEED_KEY];
 
@@ -488,9 +608,7 @@ function getSuperTyphoonPushDirection(
   return Vector(1, 0);
 }
 
-function applyPolarityForce(tear: EntityTear, polarity: GiantsDeepPolarity) {
-  const directionMultiplier = polarity === ATTRACT_POLARITY ? 1 : -1;
-
+function applyAttractForce(tear: EntityTear) {
   for (const npc of getNPCs()) {
     if (!isAffectedNPC(npc)) {
       continue;
@@ -507,20 +625,493 @@ function applyPolarityForce(tear: EntityTear, polarity: GiantsDeepPolarity) {
       1 - distance / FORCE_RADIUS,
     );
     const velocityForce = direction.mul(
-      VELOCITY_FORCE_STRENGTH * distanceMultiplier * directionMultiplier,
+      VELOCITY_FORCE_STRENGTH * distanceMultiplier,
     );
     const positionOffset = direction.mul(
-      POSITION_FORCE_STRENGTH * distanceMultiplier * directionMultiplier,
+      POSITION_FORCE_STRENGTH * distanceMultiplier,
     );
 
-    npc.Velocity = npc.Velocity.mul(ENEMY_VELOCITY_DAMPING).add(velocityForce);
-    npc.Position = Game()
+    const unclampedPosition = npc.Position.add(positionOffset);
+    const clampedPosition = Game()
       .GetRoom()
-      .GetClampedPosition(
-        npc.Position.add(positionOffset),
-        ENEMY_POSITION_CLAMP_MARGIN,
-      );
+      .GetClampedPosition(unclampedPosition, ENEMY_POSITION_CLAMP_MARGIN);
+
+    npc.Velocity = npc.Velocity.mul(ENEMY_VELOCITY_DAMPING).add(velocityForce);
+    npc.Position = clampedPosition;
   }
+}
+
+function updateRepelCyclone(tear: EntityTear) {
+  for (const npc of getNPCs()) {
+    if (!isAffectedNPC(npc) || !isRepelTearTouchingNPC(tear, npc)) {
+      continue;
+    }
+
+    launchOrBoostNPCFromRepelCyclone(tear, npc);
+  }
+}
+
+function launchOrBoostNPCFromRepelCyclone(tear: EntityTear, npc: EntityNPC) {
+  const state = getRepelLaunchState(npc);
+  if (state === undefined) {
+    launchNPCFromRepelCyclone(tear, npc);
+    return;
+  }
+
+  boostRepelLaunchedNPCFromTear(tear, npc, state);
+}
+
+function launchNPCFromRepelCyclone(tear: EntityTear, npc: EntityNPC) {
+  if (isRepelTearLaunchOnCooldown(tear, npc)) {
+    return;
+  }
+
+  const launchID = getNextRepelLaunchID();
+  const direction = getRepelLaunchDirection(tear, npc);
+  const damage = getRepelImpactDamage(tear);
+
+  setRepelLaunchState(npc, {
+    direction,
+    damage,
+    launchID,
+    multiplier: 1,
+    bounceCount: 1,
+    sourceTearSeed: tear.InitSeed,
+    tearFlags: tear.TearFlags,
+  });
+  markRepelLaunchTearHit(npc, tear, launchID);
+  markRepelTearLaunchCooldown(tear, npc);
+  npc.Velocity = direction.mul(REPEL_LAUNCH_SPEED);
+}
+
+function boostRepelLaunchedNPCFromTear(
+  tear: EntityTear,
+  npc: EntityNPC,
+  state: RepelLaunchState,
+) {
+  if (hasRepelLaunchHitTear(npc, tear, state.launchID)) {
+    return;
+  }
+
+  const direction = getRepelLaunchDirection(tear, npc);
+  const multiplier = math.min(
+    REPEL_CHAIN_MAX_DAMAGE_MULTIPLIER,
+    state.multiplier + REPEL_CHAIN_DAMAGE_MULTIPLIER_BONUS,
+  );
+  const bounceCount = state.bounceCount + 1;
+  const nextState = {
+    direction,
+    damage: state.damage,
+    launchID: state.launchID,
+    multiplier,
+    bounceCount,
+    sourceTearSeed: state.sourceTearSeed,
+    tearFlags: addFlag(state.tearFlags, tear.TearFlags),
+  };
+
+  setRepelLaunchState(npc, nextState);
+  markRepelLaunchTearHit(npc, tear, state.launchID);
+  markRepelTearLaunchCooldown(tear, npc);
+
+  if (bounceCount >= REPEL_CHAIN_IMPACT_BOUNCE_COUNT) {
+    finishRepelLaunchImpact(npc, nextState);
+    return;
+  }
+
+  npc.Velocity = direction.mul(REPEL_LAUNCH_SPEED);
+}
+
+function updateRepelLaunchedNPC(npc: EntityNPC) {
+  const state = getRepelLaunchState(npc);
+  if (state === undefined) {
+    return;
+  }
+
+  if (!isAffectedNPC(npc)) {
+    clearRepelLaunchState(npc);
+    return;
+  }
+
+  boostRepelLaunchedNPCFromNearbyTears(npc, state);
+  const updatedState = getRepelLaunchState(npc) ?? state;
+  const {direction} = updatedState;
+  const currentPosition = npc.Position;
+  const nextPosition = currentPosition.add(direction.mul(REPEL_LAUNCH_SPEED));
+  const clampedPosition = Game()
+    .GetRoom()
+    .GetClampedPosition(nextPosition, ENEMY_POSITION_CLAMP_MARGIN);
+  const hitWall = wasPositionClamped(nextPosition, clampedPosition);
+  const hitGrid = hasRepelLaunchHitGrid(
+    currentPosition,
+    clampedPosition,
+    direction,
+    npc.Size,
+  );
+
+  if (hitWall || hitGrid) {
+    npc.Position = hitWall ? clampedPosition : currentPosition;
+    finishRepelLaunchImpact(npc, updatedState);
+    return;
+  }
+
+  npc.Velocity = direction.mul(REPEL_LAUNCH_SPEED);
+  npc.Position = clampedPosition;
+}
+
+function boostRepelLaunchedNPCFromNearbyTears(
+  npc: EntityNPC,
+  state: RepelLaunchState,
+) {
+  let currentState: RepelLaunchState | undefined = state;
+
+  for (const tear of getTears()) {
+    currentState = getRepelLaunchState(npc);
+    if (currentState === undefined) {
+      return;
+    }
+
+    if (
+      !isRepelCycloneTear(tear)
+      || isSuperTyphoon(tear)
+      || !isRepelTearTouchingNPC(tear, npc)
+    ) {
+      continue;
+    }
+
+    boostRepelLaunchedNPCFromTear(tear, npc, currentState);
+  }
+}
+
+function finishRepelLaunchImpact(npc: EntityNPC, state: RepelLaunchState) {
+  const source = getTearBySeed(state.sourceTearSeed) ?? npc;
+  const damage = state.damage * state.multiplier;
+
+  clearRepelLaunchState(npc);
+  npc.Velocity = Vector(0, 0);
+  applyRepelImpactTearFlagEffects(npc, state, source, damage);
+  npc.TakeDamage(damage, DamageFlag.NO_MODIFIERS, EntityRef(source), 0);
+  Game().SpawnParticles(
+    npc.Position,
+    EffectVariant.ROCK_PARTICLE,
+    REPEL_IMPACT_PARTICLE_COUNT,
+    REPEL_IMPACT_PARTICLE_SPEED,
+  );
+  SFXManager().Play(SoundEffect.ROCK_CRUMBLE);
+}
+
+function applyRepelImpactTearFlagEffects(
+  npc: EntityNPC,
+  state: RepelLaunchState,
+  source: Entity,
+  damage: float,
+) {
+  const sourceRef = EntityRef(source);
+  const dotDamage = math.max(1, damage * REPEL_STATUS_DAMAGE_MULTIPLIER);
+
+  if (hasFlag(state.tearFlags, TearFlag.POISON)) {
+    npc.AddPoison(sourceRef, REPEL_STATUS_DURATION_FRAMES, dotDamage);
+  }
+
+  if (hasFlag(state.tearFlags, TearFlag.BURN)) {
+    npc.AddBurn(sourceRef, REPEL_STATUS_DURATION_FRAMES, dotDamage);
+  }
+
+  if (
+    hasFlag(state.tearFlags, TearFlag.SLOW)
+    || hasFlag(state.tearFlags, TearFlag.GISH)
+  ) {
+    npc.AddSlowing(
+      sourceRef,
+      REPEL_STATUS_DURATION_FRAMES,
+      0.5,
+      REPEL_SLOW_COLOR,
+    );
+  }
+
+  if (hasFlag(state.tearFlags, TearFlag.FEAR)) {
+    npc.AddFear(sourceRef, REPEL_STATUS_DURATION_FRAMES);
+  }
+
+  if (hasFlag(state.tearFlags, TearFlag.CHARM)) {
+    npc.AddCharmed(sourceRef, REPEL_STATUS_DURATION_FRAMES);
+  }
+
+  if (
+    hasFlag(state.tearFlags, TearFlag.CONFUSION)
+    || hasFlag(state.tearFlags, TearFlag.PERMANENT_CONFUSION)
+  ) {
+    npc.AddConfusion(sourceRef, REPEL_STATUS_DURATION_FRAMES);
+  }
+
+  if (
+    hasFlag(state.tearFlags, TearFlag.FREEZE)
+    || hasFlag(state.tearFlags, TearFlag.ICE)
+  ) {
+    npc.AddFreeze(sourceRef, REPEL_FREEZE_DURATION_FRAMES);
+  }
+
+  if (hasFlag(state.tearFlags, TearFlag.MIDAS)) {
+    npc.AddMidasFreeze(sourceRef, REPEL_FREEZE_DURATION_FRAMES);
+  }
+
+  if (
+    hasFlag(state.tearFlags, TearFlag.SHRINK)
+    || hasFlag(state.tearFlags, TearFlag.GODS_FLESH)
+  ) {
+    npc.AddShrink(sourceRef, REPEL_STATUS_DURATION_FRAMES);
+  }
+
+  if (hasFlag(state.tearFlags, TearFlag.EXPLOSIVE)) {
+    applyRepelImpactSplashDamage(
+      npc,
+      source,
+      damage * REPEL_EXPLOSIVE_SPLASH_DAMAGE_MULTIPLIER,
+      REPEL_EXPLOSIVE_SPLASH_RADIUS,
+      DamageFlag.EXPLOSION,
+    );
+    spawn(EntityType.EFFECT, EffectVariant.BOMB_EXPLOSION, 0, npc.Position);
+    SFXManager().Play(SoundEffect.EXPLOSION_WEAK);
+  }
+
+  if (
+    hasFlag(state.tearFlags, TearFlag.CHAIN)
+    || hasFlag(state.tearFlags, TearFlag.JACOBS)
+  ) {
+    applyRepelImpactSplashDamage(
+      npc,
+      source,
+      damage * REPEL_CHAIN_SPLASH_DAMAGE_MULTIPLIER,
+      REPEL_CHAIN_SPLASH_RADIUS,
+      DamageFlag.NO_MODIFIERS,
+    );
+    Game().SpawnParticles(npc.Position, EffectVariant.IMPACT, 4, 6);
+  }
+}
+
+function applyRepelImpactSplashDamage(
+  impactNPC: EntityNPC,
+  source: Entity,
+  damage: float,
+  radius: float,
+  damageFlag: DamageFlag,
+) {
+  for (const npc of getNPCs()) {
+    if (
+      npc.InitSeed === impactNPC.InitSeed
+      || !isAffectedNPC(npc)
+      || npc.Position.Distance(impactNPC.Position) > radius
+    ) {
+      continue;
+    }
+
+    npc.TakeDamage(damage, damageFlag, EntityRef(source), 0);
+  }
+}
+
+function setRepelImpactDamage(tear: EntityTear, damage: float) {
+  tear.GetData()[GIANTS_DEEP_REPEL_IMPACT_DAMAGE_KEY] = damage;
+}
+
+function getRepelImpactDamage(tear: EntityTear): float {
+  const damage = tear.GetData()[GIANTS_DEEP_REPEL_IMPACT_DAMAGE_KEY];
+
+  if (tear.CollisionDamage > 0) {
+    return tear.CollisionDamage;
+  }
+
+  return typeof damage === "number" ? damage : tear.BaseDamage;
+}
+
+function setRepelLaunchState(npc: EntityNPC, state: RepelLaunchState) {
+  const data = npc.GetData();
+
+  data[GIANTS_DEEP_REPEL_LAUNCH_ID_KEY] = state.launchID;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_X_KEY] = state.direction.X;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_Y_KEY] = state.direction.Y;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY] = state.damage;
+  data[GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY] = state.multiplier;
+  data[GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY] = state.bounceCount;
+  data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY] =
+    state.sourceTearSeed;
+  data[GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY] = state.tearFlags;
+}
+
+function getRepelLaunchState(npc: EntityNPC): RepelLaunchState | undefined {
+  const data = npc.GetData();
+  const launchID = data[GIANTS_DEEP_REPEL_LAUNCH_ID_KEY];
+  const directionX = data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_X_KEY];
+  const directionY = data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_Y_KEY];
+  const damage = data[GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY];
+  const multiplier = data[GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY];
+  const bounceCount = data[GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY];
+  const sourceTearSeed =
+    data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY];
+  const tearFlags = data[GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY];
+
+  if (
+    typeof launchID !== "number"
+    || typeof directionX !== "number"
+    || typeof directionY !== "number"
+    || typeof damage !== "number"
+    || typeof multiplier !== "number"
+    || typeof bounceCount !== "number"
+    || typeof sourceTearSeed !== "number"
+    || typeof tearFlags !== "number"
+  ) {
+    return undefined;
+  }
+
+  return {
+    direction: Vector(directionX, directionY),
+    damage,
+    launchID,
+    multiplier,
+    bounceCount,
+    sourceTearSeed,
+    tearFlags: tearFlags as unknown as BitFlags<TearFlag>,
+  };
+}
+
+function clearRepelLaunchState(npc: EntityNPC) {
+  const data = npc.GetData();
+
+  data[GIANTS_DEEP_REPEL_LAUNCH_ID_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_X_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DIRECTION_Y_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY] = undefined;
+  data[GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY] = undefined;
+}
+
+function getNextRepelLaunchID(): int {
+  const launchID = nextRepelLaunchID;
+
+  nextRepelLaunchID++;
+  return launchID;
+}
+
+function getRepelLaunchDirection(tear: EntityTear, npc: EntityNPC): Vector {
+  if (tear.Velocity.LengthSquared() > 0) {
+    return tear.Velocity.Normalized();
+  }
+
+  if (tear.ContinueVelocity.LengthSquared() > 0) {
+    return tear.ContinueVelocity.Normalized();
+  }
+
+  const positionDirection = npc.Position.sub(tear.Position);
+  if (positionDirection.LengthSquared() > 0) {
+    return positionDirection.Normalized();
+  }
+
+  return Vector(1, 0);
+}
+
+function isRepelCycloneTear(tear: EntityTear) {
+  return getTearPolarity(tear) === REPEL_POLARITY;
+}
+
+function isRepelTearTouchingNPC(tear: EntityTear, npc: EntityNPC) {
+  return tear.Position.Distance(npc.Position) <= tear.Size + npc.Size;
+}
+
+function hasRepelLaunchHitTear(
+  npc: EntityNPC,
+  tear: EntityTear,
+  launchID: int,
+) {
+  return npc.GetData()[getRepelLaunchTearHitKey(tear)] === launchID;
+}
+
+function markRepelLaunchTearHit(
+  npc: EntityNPC,
+  tear: EntityTear,
+  launchID: int,
+) {
+  npc.GetData()[getRepelLaunchTearHitKey(tear)] = launchID;
+}
+
+function getRepelLaunchTearHitKey(tear: EntityTear) {
+  return `${GIANTS_DEEP_REPEL_LAUNCH_TEAR_HIT_PREFIX}${tear.InitSeed}`;
+}
+
+function isRepelTearLaunchOnCooldown(tear: EntityTear, npc: EntityNPC) {
+  const lastLaunchFrame = npc.GetData()[getRepelTearLaunchCooldownKey(tear)];
+
+  return (
+    typeof lastLaunchFrame === "number"
+    && Game().GetFrameCount() - lastLaunchFrame
+      < REPEL_TEAR_RELAUNCH_COOLDOWN_FRAMES
+  );
+}
+
+function markRepelTearLaunchCooldown(tear: EntityTear, npc: EntityNPC) {
+  npc.GetData()[getRepelTearLaunchCooldownKey(tear)] = Game().GetFrameCount();
+}
+
+function getRepelTearLaunchCooldownKey(tear: EntityTear) {
+  return `${GIANTS_DEEP_REPEL_TEAR_LAUNCH_COOLDOWN_PREFIX}${tear.InitSeed}`;
+}
+
+function hasRepelLaunchHitGrid(
+  currentPosition: Vector,
+  nextPosition: Vector,
+  direction: Vector,
+  npcSize: float,
+) {
+  const sideOffset = math.max(4, npcSize * 0.5);
+  const forwardOffset = math.max(
+    REPEL_LAUNCH_GRID_SAMPLE_DISTANCE,
+    npcSize * 0.75,
+  );
+  const perpendicular = Vector(-direction.Y, direction.X);
+  const samplePositions = [
+    nextPosition,
+    nextPosition.add(direction.mul(forwardOffset)),
+    nextPosition.add(perpendicular.mul(sideOffset)),
+    nextPosition.sub(perpendicular.mul(sideOffset)),
+  ];
+
+  if (
+    currentPosition.Distance(nextPosition) > REPEL_LAUNCH_GRID_SAMPLE_DISTANCE
+  ) {
+    samplePositions.push(
+      currentPosition.add(direction.mul(REPEL_LAUNCH_GRID_SAMPLE_DISTANCE)),
+    );
+  }
+
+  for (const position of samplePositions) {
+    if (isSolidGridCollision(Game().GetRoom().GetGridCollisionAtPos(position))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function isSolidGridCollision(gridCollisionClass: GridCollisionClass) {
+  return (
+    gridCollisionClass === GridCollisionClass.OBJECT
+    || gridCollisionClass === GridCollisionClass.SOLID
+    || gridCollisionClass === GridCollisionClass.WALL
+    || gridCollisionClass === GridCollisionClass.WALL_EXCEPT_PLAYER
+  );
+}
+
+function getTearBySeed(seed: int): EntityTear | undefined {
+  for (const tear of getTears()) {
+    if (tear.InitSeed === seed) {
+      return tear;
+    }
+  }
+
+  return undefined;
+}
+
+function wasPositionClamped(position: Vector, clampedPosition: Vector) {
+  return position.Distance(clampedPosition) > 0.1;
 }
 
 function isAffectedNPC(npc: EntityNPC) {
