@@ -31,7 +31,8 @@
     gfx="dark_bramble.png" />
   <passive name="Quantum Moon"
     description="I swear it was here!"
-    gfx="quantum_moon.png" />
+    gfx="quantum_moon.png"
+    quality="4" />
   <passive name="Interloper"
     description="Plasma core"
     gfx="interloper.png" />

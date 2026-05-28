@@ -57,8 +57,19 @@ scompare per il resto del piano dopo averlo mangiato, ma il premio del piano e'
 perso. Se il player completa il piano mentre la rana e' presente e non lo ha
 mangiato, ottiene un premio grosso ancora da definire. Al piano successivo il
 ciclo ricomincia.
-Quantum Moon = Oggetti che cambiano stato quando cambi stanza.
-possono scomparire o cambiare tipo di oggetto.
+Quantum Moon = Q4. Agisce solo sulla Treasure Room. Il pedestal della Treasure
+Room diventa quantistico: l'oggetto mostrato e' fantasma/trasparente e non viene
+considerato un vero pedestal da D6 e altre meccaniche di reroll finche' non
+collassa. Ogni volta che Isaac esce e rientra nella Treasure Room, il pedestal
+prova a cambiare stato e memorizza gli oggetti gia' mostrati. A ogni cambio
+aumenta la probabilita' che il pedestal sparisca del tutto; al sesto oggetto
+visto la prossima osservazione lo fa sparire al 100%, quindi il sesto e' il
+massimo prendibile. Potrebbe sparire anche molto prima.
+Quando Isaac prende l'oggetto corrente, quello diventa reale e tutti gli oggetti
+visti ma non scelti diventano wisps: passivi come item wisps stile Lemegeton,
+attivi come wisps stile Book of Virtues se hanno un wisp valido, altrimenti
+fallback da definire. Le possibilita' scartate non danno bonus permanenti: sono
+potere fragile finche' i wisps sopravvivono.
 The Stranger =
 Interloper = Ogni 20 secondi lacrime di ghiaccio esplodono dal giocatore verso l'esterno che fanno
 dot di veleno che rallenta.
