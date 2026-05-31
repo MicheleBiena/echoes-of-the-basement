@@ -9,7 +9,9 @@ import {
   upgradeMod,
 } from "isaacscript-common";
 import { name } from "../package.json";
+import { InstrumentNotes } from "./effects/instrumentNotes";
 import { eidDescriptions, eidDescriptionsIta } from "./eid-descriptions";
+import { DarkBrambleAnglerfish } from "./entities/darkBrambleAnglerfish";
 import { ChertDrums } from "./items/active/chertDrums";
 import { EskerWhistle } from "./items/active/eskerWhistle";
 import { FeldsparHarmonica } from "./items/active/feldsparHarmonica";
@@ -39,6 +41,8 @@ interface EIDItemDescription {
 }
 
 const modFeatures = [
+  DarkBrambleAnglerfish,
+  InstrumentNotes,
   TimberHearth,
   Attlerock,
   AshTwin,

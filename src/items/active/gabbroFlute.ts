@@ -1,9 +1,5 @@
 import type { CollectibleType } from "isaac-typescript-definitions";
-import {
-  EffectVariant,
-  ModCallback,
-  SoundEffect,
-} from "isaac-typescript-definitions";
+import { ModCallback } from "isaac-typescript-definitions";
 import {
   Callback,
   getNPCs,
@@ -11,8 +7,9 @@ import {
   isActiveEnemy,
   ModFeature,
 } from "isaacscript-common";
-import { ITEM_IDS } from "../itemRegistry";
+import { ITEM_IDS, ITEM_NAMES } from "../itemRegistry";
 import { activateGabbroCycloneChaos } from "../passive/giantsDeep";
+import { playInstrumentUse } from "./instrumentBehavior";
 
 const { GABBRO_FLUTE, GIANTS_DEEP } = ITEM_IDS;
 
@@ -50,9 +47,7 @@ export class GabbroFlute extends ModFeature {
       activateGabbroCycloneChaos(player, GABBRO_FLUTE_DURATION_FRAMES);
     }
 
-    player.AnimateHappy();
-    Game().SpawnParticles(player.Position, EffectVariant.POOF_1, 6, 4);
-    SFXManager().Play(SoundEffect.FLUTE);
+    playInstrumentUse(player, GABBRO_FLUTE, ITEM_NAMES.GABBRO_FLUTE);
     return undefined;
   }
 

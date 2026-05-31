@@ -4,7 +4,7 @@ Questa guida serve a dare ai beta tester e ai content creator un'idea chiara di 
 
 ## Stato Attuale
 
-Oggetti implementati: 12 su 18.
+Oggetti implementati: 15 su 18.
 
 Passivi e familiari giocabili:
 
@@ -16,6 +16,7 @@ Passivi e familiari giocabili:
 | Ember Twin | 2 | Implementato |
 | Brittle Hollow | 3 | Implementato |
 | Giant's Deep | 3 | Implementato |
+| Dark Bramble | 3 | Implementato |
 | Interloper | 3 | Implementato |
 | Quantum Moon | 4 | Implementato |
 | Hearthian Spacesuit | 3 | Implementato |
@@ -27,8 +28,10 @@ Attivi giocabili:
 | Riebeck's Banjo | 2 | Implementato |
 | Esker's Whistle | 2 | Implementato |
 | Gabbro's Flute | 2 | Implementato |
+| Chert's Drums | 2 | Implementato |
+| Solanum's Keyboard | 3 | Implementato |
 
-Ancora in sviluppo: Dark Bramble, The Stranger, Feldspar's Harmonica, Chert's Drums, Solanum's Keyboard, The Prisoner's Theremin.
+Ancora in sviluppo: The Stranger, Feldspar's Harmonica, The Prisoner's Theremin.
 
 ## Come Testare
 
@@ -88,6 +91,12 @@ Trasforma le lacrime in cicloni lenti e rimbalzanti. Alcuni cicloni attirano, al
 
 Da osservare: e' un oggetto che cambia molto il ritmo del combattimento. La lentezza delle lacrime deve sembrare un costo interessante, non un difetto tecnico. Attenzione particolare a performance e leggibilita' con Soy Milk o molti proiettili.
 
+### Dark Bramble
+
+Dopo 45 secondi nel piano, una rana pescatrice inarrestabile inizia a inseguire Isaac tra le stanze. Se tocca Isaac, lo uccide. Se il player sopravvive fino alla Boss Room e batte il boss mentre la caccia e' attiva, compare un oggetto quality 3 o superiore da una pool principale.
+
+Da osservare: deve trasmettere pressione e paura senza sembrare un nemico normale. Il premio deve sembrare meritato, ma la minaccia non deve rendere ogni piano ingestibile.
+
 ### Interloper
 
 Oggetto passivo da controllo e danno periodico. In combattimento genera una raffica di ghost matter ghiacciata attorno a Isaac, con effetti di veleno, rallentamento e possibile congelamento.
@@ -102,7 +111,7 @@ Da osservare: il rischio deve essere chiaro. Il giocatore deve capire che sta sc
 
 ### Riebeck's Banjo
 
-Attivo a 3 cariche. Piazza un piccolo accampamento stabile nel punto in cui viene usato: il campo annulla i proiettili nemici che entrano nell'area, ma Isaac e' protetto solo se resta dentro. Con Brittle Hollow, restare nel campo potenzia i colpi in modo molto marcato.
+Attivo a 3 cariche. Piazza un piccolo accampamento stabile nel punto in cui viene usato: il campo annulla i proiettili nemici che entrano nell'area, ma Isaac e' protetto solo se resta dentro. Con Brittle Hollow, restare nel campo potenzia i colpi in modo molto marcato. All'utilizzo suona una delle tre varianti audio del banjo.
 
 Da osservare: il campo deve essere leggibile come area fissa. Il cristallo centrale deve sembrare il punto di ancoraggio, mentre l'anello indica l'area sicura.
 
@@ -118,14 +127,23 @@ Attivo a 3 cariche. Trasforma brevemente la stanza in una situazione molto poco 
 
 Da osservare: l'effetto deve essere funny e riconoscibile, ma non deve diventare fastidioso da guardare per troppo tempo. Con Giant's Deep deve creare clip assurde senza far crollare la leggibilita' della stanza.
 
+### Chert's Drums
+
+Attivo a 3 cariche. Analizza la stanza per pochi secondi: i nemici attivi vengono marchiati e subiscono piu' danni. Con Ash Twin, l'analisi rende Isaac piu' agile e rapido. Con Ember Twin, l'analisi diventa piu' pesante: piu' danno, meno velocita' e piccoli tick di erosione sui nemici marchiati.
+
+Da osservare: deve sembrare uno strumento tattico e leggibile, non un'esplosione invisibile di danno. Il marchio sui nemici deve far capire che Chert ha "letto" la stanza.
+
+### Solanum's Keyboard
+
+Attivo a 4 cariche. Suona una memoria casuale di uno dei pianeti principali: puo' curare, dare boost temporanei, aprire rift, sparare cicloni, spaventare nemici, creare un wisp da un oggetto posseduto o generare ghost matter ghiacciata. A ogni uso parte un overlay full screen stile giantbook con il pianeta scelto.
+
+Da osservare: deve sembrare un riassunto imprevedibile del sistema, non un D100 generico. L'effetto casuale deve restare comprensibile anche quando il player non conosce Outer Wilds.
+
 ## Oggetti In Sviluppo
 
 Questi oggetti non sono ancora pronti per giudizi di bilanciamento.
 
-- Dark Bramble: pressione e paura, con una minaccia che segue il player nel piano.
 - Feldspar's Harmonica: dash spericolato, rottura di muri e apertura di passaggi.
-- Chert's Drums: analisi, osservazione e lettura del piano.
-- Solanum's Keyboard: memoria planetaria casuale, con effetti ispirati ai pianeti principali.
 - The Prisoner's Theremin e The Stranger: da progettare piu' avanti, con tema DLC separato.
 
 ## Nota Per Content Creator

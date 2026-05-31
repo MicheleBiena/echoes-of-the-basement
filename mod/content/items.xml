@@ -22,7 +22,7 @@
     gfx="ember_twin.png"
     quality="2" />
   <passive id="5" name="Brittle Hollow"
-    description="A world below."
+    description="Don't look down."
     gfx="brittle_hollow.png"
     quality="3" />
   <passive id="6" name="Giant's Deep"
@@ -31,7 +31,8 @@
     quality="3" />
   <passive id="7" name="Dark Bramble"
     description="Don't make a noise!"
-    gfx="dark_bramble.png" />
+    gfx="dark_bramble.png"
+    quality="3" />
   <passive id="8" name="Quantum Moon"
     description="I swear it was here!"
     gfx="quantum_moon.png"
@@ -54,23 +55,25 @@
     gfx="feldspar_harmonica.png"
     maxcharges="1" />
   <active id="13" name="Chert's Drums"
-    description="Placeholder - Chert's Drums"
+    description="Read the stars."
     gfx="chert_drums.png"
-    maxcharges="1" />
+    maxcharges="3"
+    quality="2" />
   <active id="14" name="Riebeck's Banjo"
     description="Set up camp."
     gfx="riebeck_banjo.png"
     maxcharges="3"
     quality="2" />
   <active id="15" name="Gabbro's Flute"
-    description="Tune in."
+    description="Meditate."
     gfx="gabbro_flute.png"
     maxcharges="3"
     quality="2" />
   <active id="16" name="Solanum's Keyboard"
-    description="Placeholder - Solanum's Keyboard"
+    description="Memories of the system."
     gfx="solanum_keyboard.png"
-    maxcharges="1" />
+    maxcharges="4"
+    quality="3" />
   <active id="17" name="Esker's Whistle"
     description="Support from home."
     gfx="esker_whistle.png"

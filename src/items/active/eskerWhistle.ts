@@ -1,10 +1,5 @@
 import type { CollectibleType } from "isaac-typescript-definitions";
-import {
-  CacheFlag,
-  EffectVariant,
-  ModCallback,
-  SoundEffect,
-} from "isaac-typescript-definitions";
+import { CacheFlag, ModCallback } from "isaac-typescript-definitions";
 import {
   Callback,
   CallbackCustom,
@@ -17,14 +12,13 @@ import {
   clearEskerWhistleAttlerocks,
   getEskerWhistleAttlerockCount,
 } from "../../utils/eskerWhistleAttlerocks";
-import { ITEM_IDS } from "../itemRegistry";
+import { ITEM_IDS, ITEM_NAMES } from "../itemRegistry";
+import { playInstrumentUse } from "./instrumentBehavior";
 
 const { ESKER_WHISTLE, THE_ATTLEROCK } = ITEM_IDS;
 
 const BASE_TEMPORARY_ATTLEROCKS = 1;
 const SYNERGY_TEMPORARY_ATTLEROCKS = 3;
-const SUMMON_PARTICLE_COUNT = 8;
-const SUMMON_PARTICLE_SPEED = 5;
 
 export class EskerWhistle extends ModFeature {
   @Callback(ModCallback.PRE_USE_ITEM, ESKER_WHISTLE)
@@ -40,14 +34,7 @@ export class EskerWhistle extends ModFeature {
     addEskerWhistleAttlerocks(player, count);
     refreshAttlerockFamiliars(player);
 
-    Game().SpawnParticles(
-      player.Position,
-      EffectVariant.POOF_1,
-      SUMMON_PARTICLE_COUNT,
-      SUMMON_PARTICLE_SPEED,
-    );
-    SFXManager().Play(SoundEffect.WHISTLE);
-    player.AnimateHappy();
+    playInstrumentUse(player, ESKER_WHISTLE, ITEM_NAMES.ESKER_WHISTLE);
 
     return undefined;
   }

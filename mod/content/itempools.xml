@@ -4,11 +4,15 @@
     <Item Name="Riebeck's Banjo" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     <Item Name="Esker's Whistle" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     <Item Name="Gabbro's Flute" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    <Item Name="Chert's Drums" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    <Item Name="Solanum's Keyboard" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
   </Pool>
   <Pool Name="shop">
     <Item Name="Riebeck's Banjo" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     <Item Name="Esker's Whistle" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
     <Item Name="Gabbro's Flute" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    <Item Name="Chert's Drums" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    <Item Name="Solanum's Keyboard" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
   </Pool>
   <Pool Name="planetarium">
     <Item Name="Timber Hearth" Weight="1" />
@@ -17,6 +21,7 @@
     <Item Name="Ember Twin" Weight="1" />
     <Item Name="Brittle Hollow" Weight="1" />
     <Item Name="Giant's Deep" Weight="1" />
+    <Item Name="Dark Bramble" Weight="1" />
     <Item Name="Quantum Moon" Weight="1" />
     <Item Name="Interloper" Weight="1" />
   </Pool>

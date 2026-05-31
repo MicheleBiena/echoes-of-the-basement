@@ -1,0 +1,42 @@
+<giantbook anm2root="gfx/ui/giantbook/">
+  <entry name="Solanum Memory Timber Hearth" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_timber_hearth.png">
+    <layer name="poof" r="167" g="204" b="154" a="255" />
+    <layer name="bg" r="60" g="88" b="62" a="165" />
+    <layer name="poof2" r="210" g="230" b="190" a="145" />
+  </entry>
+  <entry name="Solanum Memory Ash Twin" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_ash_twin.png">
+    <layer name="poof" r="206" g="190" b="146" a="255" />
+    <layer name="bg" r="92" g="74" b="52" a="165" />
+    <layer name="poof2" r="226" g="208" b="172" a="145" />
+  </entry>
+  <entry name="Solanum Memory Ember Twin" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_ember_twin.png">
+    <layer name="poof" r="190" g="146" b="112" a="255" />
+    <layer name="bg" r="92" g="52" b="42" a="170" />
+    <layer name="poof2" r="216" g="178" b="132" a="145" />
+  </entry>
+  <entry name="Solanum Memory Brittle Hollow" anm2="GiantBook.anm2" anim="Shake" gfx="solanum_memory_brittle_hollow.png">
+    <layer name="poof" r="124" g="104" b="174" a="255" />
+    <layer name="bg" r="34" g="22" b="68" a="185" />
+    <layer name="poof2" r="170" g="146" b="210" a="150" />
+  </entry>
+  <entry name="Solanum Memory Giants Deep" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_giants_deep.png">
+    <layer name="poof" r="114" g="178" b="168" a="255" />
+    <layer name="bg" r="24" g="62" b="72" a="175" />
+    <layer name="poof2" r="164" g="214" b="202" a="150" />
+  </entry>
+  <entry name="Solanum Memory Dark Bramble" anm2="GiantBook.anm2" anim="Shake" gfx="solanum_memory_dark_bramble.png">
+    <layer name="poof" r="64" g="82" b="86" a="255" />
+    <layer name="bg" r="10" g="16" b="22" a="205" />
+    <layer name="poof2" r="90" g="112" b="112" a="160" />
+  </entry>
+  <entry name="Solanum Memory Quantum Moon" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_quantum_moon.png">
+    <layer name="poof" r="174" g="174" b="206" a="255" />
+    <layer name="bg" r="54" g="54" b="84" a="175" />
+    <layer name="poof2" r="214" g="214" b="236" a="150" />
+  </entry>
+  <entry name="Solanum Memory Interloper" anm2="GiantBook.anm2" anim="Appear" gfx="solanum_memory_interloper.png">
+    <layer name="poof" r="142" g="218" b="212" a="255" />
+    <layer name="bg" r="28" g="74" b="78" a="175" />
+    <layer name="poof2" r="190" g="238" b="232" a="150" />
+  </entry>
+</giantbook>

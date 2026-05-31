@@ -122,7 +122,7 @@ function setLastBurstFrame(player: EntityPlayer, frameCount: int): void {
   player.GetData()[INTERLOPER_LAST_BURST_FRAME_KEY] = frameCount;
 }
 
-function spawnInterloperBurst(player: EntityPlayer): void {
+export function spawnInterloperBurst(player: EntityPlayer): void {
   for (let i = 0; i < BURST_TEAR_COUNT; i++) {
     const angle = (360 / BURST_TEAR_COUNT) * i;
     const direction = Vector.FromAngle(angle);

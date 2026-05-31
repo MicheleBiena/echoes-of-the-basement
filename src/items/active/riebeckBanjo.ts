@@ -4,7 +4,6 @@ import {
   EffectVariant,
   EntityType,
   ModCallback,
-  SoundEffect,
 } from "isaac-typescript-definitions";
 import {
   Callback,
@@ -17,8 +16,9 @@ import {
   ModFeature,
   spawn,
 } from "isaacscript-common";
-import { ITEM_IDS } from "../itemRegistry";
+import { ITEM_IDS, ITEM_NAMES } from "../itemRegistry";
 import { forceSpawnBrittleHollowRift } from "../passive/brittleHollow";
+import { playInstrumentUse } from "./instrumentBehavior";
 
 const { BRITTLE_HOLLOW, RIEBECK_BANJO } = ITEM_IDS;
 
@@ -53,14 +53,7 @@ export class RiebeckBanjo extends ModFeature {
     player: EntityPlayer,
   ): boolean | undefined {
     setStableField(player, player.Position);
-    player.AnimateHappy();
-    Game().SpawnParticles(
-      player.Position,
-      EffectVariant.DUST_CLOUD,
-      STABLE_FIELD_PARTICLE_COUNT + 4,
-      STABLE_FIELD_PARTICLE_SPEED + 2,
-    );
-    SFXManager().Play(SoundEffect.SHELL_GAME);
+    playInstrumentUse(player, RIEBECK_BANJO, ITEM_NAMES.RIEBECK_BANJO);
     syncStableFieldEffect(player);
 
     return undefined;
@@ -253,7 +246,6 @@ function applyStableField(player: EntityPlayer): void {
     );
   }
 
-  let blockedProjectile = false;
   for (const projectile of getProjectiles()) {
     if (!shouldBlockProjectile(fieldPosition, projectile)) {
       continue;
@@ -266,11 +258,6 @@ function applyStableField(player: EntityPlayer): void {
       PROJECTILE_BLOCK_PARTICLE_SPEED,
     );
     projectile.Remove();
-    blockedProjectile = true;
-  }
-
-  if (blockedProjectile) {
-    SFXManager().Play(SoundEffect.ROCK_CRUMBLE, 0.45);
   }
 }
 

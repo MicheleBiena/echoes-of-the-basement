@@ -56,8 +56,27 @@ inarrestabile, una sorta di Dark Esau piu' lenta, che insegue Isaac in tutte le
 stanze. Se tocca Isaac, Isaac muore. Se il player ha vite multiple, la rana
 scompare per il resto del piano dopo averlo mangiato, ma il premio del piano e'
 perso. Se il player completa il piano mentre la rana e' presente e non lo ha
-mangiato, ottiene un premio grosso ancora da definire. Al piano successivo il
-ciclo ricomincia.
+mangiato, ottiene un collectible quality 3 o superiore nella boss room. Al piano
+successivo il ciclo ricomincia.
+Implementazione iniziale item: se un player possiede Dark Bramble, dopo 45
+secondi nel piano parte la caccia. La rana compare nella stanza corrente e viene
+respawnata in ogni nuova stanza finche' il piano resta braccato. Se il player
+viene mangiato con una vita extra disponibile, la rana sparisce per il resto del
+piano e il premio del piano viene marcato come perso. Se il boss viene sconfitto
+mentre la caccia e' attiva e il premio non e' perso, nella boss room compare un
+collectible quality 3 o superiore pescato da qualsiasi pool principale; se le
+pool non restituiscono un item valido, fallback su tutti i collectible
+disponibili quality 3+.
+Creatura base: custom NPC "Dark Bramble Anglerfish", spawnabile per test da
+console con il comando eotb_anglerfish. Fluttua ignorando la grid, segue Isaac
+lentamente e in modo inesorabile, usa due frame placeholder e non e' uccidibile
+dagli attacchi normali. Usa un id custom valido sotto il cap del gioco
+(2600), non una variant di Gaper, cosi' non eredita sprite morte e suoni da
+nemici vanilla.
+TODO grafico futuro: aggiungere custom death portrait per la rana pescatrice.
+Servira' dichiarare deathanm2 nella root di entities2.xml, creare il relativo
+enemy_death_portraits.anm2/png e aggiungere portrait="0" all'entita'. Da valutare
+anche tag bestiary quando la grafica finale sara' pronta.
 Quantum Moon = Q4. Agisce solo sulla Treasure Room. Il pedestal della Treasure
 Room diventa quantistico: l'oggetto mostrato e' fantasma/trasparente e non viene
 considerato un vero pedestal da D6 e altre meccaniche di reroll finche' non
@@ -99,6 +118,16 @@ Gli strumenti possono stare almeno anche nello shop, oltre alle altre pool da
 definire. Il giocatore puo' usare uno strumento, lasciarlo a terra e sostituirlo
 con un altro active: il ricordo dello strumento suonato resta valido per la run.
 
+Standard audio strumenti: ogni strumento attivo implementato usa un sound custom
+in sounds.xml con 3 varianti .wav equiprobabili. I file audio usano solo il nome
+dello strumento, senza nome del viaggiatore: banjo1/2/3, drums1/2/3, flute1/2/3,
+whistle1/2/3, harmonica1/2/3, keyboard1/2/3, theremin1/2/3. Il codice passa
+sempre da un helper comune: animazione standard dell'active sopra la testa,
+effetto visivo delle note musicali e sound custom dello strumento. Niente SFX
+vanilla placeholder, salvo eccezioni esplicitamente decise. Le note sono piccole
+note che salgono da Isaac tramite gfx/effects/instrumentNotes.png e
+instrumentNotes.anm2.
+
 Da evitare come meccanica: loop temporale e supernova che chiude la run. Possono
 esistere come tema/lore, ma non come effetto giocabile normale.
 
@@ -112,12 +141,14 @@ grid. Se sbatte contro qualsiasi muro della stanza prova ad aprire un passaggio:
 secret, super secret e, per il meme di Feldspar, anche stanze rosse se possibile.
 In sinergia con Dark Bramble, la rana pescatrice si blocca per circa 40 secondi.
 
-Chert's Drums = Chert / Ember Twin, con possibile legame anche ad Ash Twin.
-Tema: astronomo, telescopio, analisi scientifica. Effetto ancora da definire:
-deve riguardare analisi di nemici, stanze o piano, piu' che una supernova.
-Possibili direzioni: marchiare nemici analizzati, rivelare informazioni del
-piano, rendere piu' prevedibile/pericoloso un evento futuro. La sinergia con
-Ember/Ash Twin puo' valorizzare il tema delle sabbie e delle statistiche.
+Chert's Drums = COMPLETO. Chert / Ember Twin, con legame anche ad Ash Twin.
+Tema: astronomo, telescopio, analisi scientifica. Active a 3 cariche. All'uso
+analizza la stanza per 8 secondi: i nemici attivi vengono marchiati e subiscono
++25% danni. Il marchio viene rinfrescato durante l'effetto, quindi puo' prendere
+anche nemici entrati/spawnati dopo l'attivazione. In sinergia con Ash Twin:
+durante l'analisi Isaac ottiene +speed e +tears. In sinergia con Ember Twin:
+durante l'analisi Isaac ottiene +damage e -speed, e i nemici marchiati subiscono
+piccoli tick di erosione.
 
 Riebeck's Banjo = COMPLETO. Riebeck / Brittle Hollow.
 Tema: protezione, paura del pericolo, zona stabile. La stanza di Riebeck su
@@ -129,7 +160,9 @@ personale. Il campo blocca i proiettili nemici che entrano nella sua area e ha
 feedback visivo con un anello/ombra pulsante. Isaac deve restare dentro per
 essere protetto. In sinergia con Brittle Hollow: finche' Isaac resta nel campo,
 le lacrime che colpiscono nemici forzano la creazione di rift al 100% quando
-possibile, rispettando cap e cooldown anti-spam.
+possibile, rispettando cap e cooldown anti-spam. Audio custom collegato:
+all'uso pesca a caso tra banjo1.wav, banjo2.wav e banjo3.wav tramite
+sounds.xml.
 
 Gabbro's Flute = COMPLETO. Gabbro / Giant's Deep.
 Tema: caos chill. Gabbro resta sdraiato sull'amaca a suonare anche durante le
@@ -139,10 +172,11 @@ Cap. I nemici vengono confusi per 8 secondi. In sinergia con Giant's Deep: per
 la durata dell'effetto, i cicloni entrano nel caos, cambiano traiettoria e si
 teletrasportano continuamente in punti diversi della stanza.
 
-Solanum's Keyboard = Solanum / conoscenza Nomai del sistema.
-Questo e' l'unico strumento senza sinergia con il pianeta corrispondente. Non
-deve essere solo Quantum Moon: Solanum rappresenta vita/morte, stato quantico e
-conoscenza Nomai raccolta sui pianeti principali.
+Solanum's Keyboard = COMPLETO. Solanum / conoscenza Nomai del sistema.
+Active a 4 cariche. Questo e' l'unico strumento senza sinergia con il pianeta
+corrispondente: l'effetto e' uguale sia che il player possieda o non possieda il
+pianeta passivo relativo. Non deve essere solo Quantum Moon: Solanum rappresenta
+vita/morte, stato quantico e conoscenza Nomai raccolta sui pianeti principali.
 
 All'uso richiama una memoria casuale di uno dei pianeti principali. Esclude The
 Attlerock perche' e' una luna/minore per i Nomai, ed esclude The Stranger perche'
@@ -150,18 +184,20 @@ e' tema DLC separato. L'effetto e' uguale sia che il player possieda o non
 possieda il pianeta passivo relativo.
 
 Memorie possibili:
-- Timber Hearth: effetto di tepore/recupero, cura o piccolo supporto.
-- Ash Twin: boost temporaneo agile, speed/tears.
-- Ember Twin: +damage, -speed e effetto The Wafer temporaneo.
-- Brittle Hollow: crea un rift sotto un nemico.
-- Giant's Deep: genera 5/6 cicloni in direzioni casuali.
+- Timber Hearth: cura 1 cuore rosso, oppure +1 Cuore Anima per personaggi senza
+  cuori rossi.
+- Ash Twin: +speed e +tears per 8 secondi.
+- Ember Twin: +damage, -speed e effetto The Wafer temporaneo per 8 secondi.
+- Brittle Hollow: forza fino a 3 rift sotto nemici validi.
+- Giant's Deep: genera 6 cicloni in direzioni casuali.
 - Dark Bramble: applica fear a tutti i nemici della stanza.
 - Quantum Moon: crea un wisp di uno degli oggetti nell'inventario.
-- Interloper: effetto ghiaccio/veleno, slow/poison e possibile freeze.
+- Interloper: genera subito una raffica di ghost matter ghiacciata.
 
-All'attivazione deve apparire sopra Isaac il PNG del pianeta scelto, grande e in
-trasparenza, con fade breve. Inoltre useremo note musicali generiche che salgono
-da Isaac e un audio .wav dello strumento.
+All'attivazione deve partire un overlay full screen stile giantbook, come The
+Bible / Monster Manual, usando la grafica del pianeta scelto. Usa anche le note
+musicali generiche che salgono da Isaac e suona un sample casuale tra
+keyboard1.wav, keyboard2.wav e keyboard3.wav.
 
 EID: non deve parlare di The Stranger o The Attlerock. Deve dire solo che suona
 una memoria casuale di uno dei pianeti principali e attiva un effetto planetario.

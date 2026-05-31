@@ -1,4 +1,4 @@
 <entities anm2root="gfx/" version="5">
-  <entity name="The Attlerock" id="3" anm2path="familiar_attlerock.anm2" collisionMass="3"
-    collisionRadius="13" friction="1" shadowSize="11" tags="cansacrifice" />
+  <entity name="The Attlerock" id="3" anm2path="familiar_attlerock.anm2" collisionMass="3" collisionRadius="13" friction="1" shadowSize="11" tags="cansacrifice" />
+  <entity name="Dark Bramble Anglerfish" id="2600" anm2path="monsters/darkBrambleAnglerfish.anm2" baseHP="999999" boss="0" champion="0" collisionDamage="1" collisionMass="999" collisionRadius="24" friction="1" shadowSize="18" stageHP="0" />
 </entities>

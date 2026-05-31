@@ -70,6 +70,16 @@ export const eidDescriptions = {
       + "At 5 chained hits, impact damage triggers even without a wall# "
       + "{{Luck}} Rare huge green typhoon deals 100 damage and blasts enemies away",
   },
+  darkBramble: {
+    idName: "Dark Bramble",
+    quality: "Quality3",
+    description:
+      "After 45 seconds on each floor, an unkillable anglerfish starts hunting Isaac# "
+      + "It follows Isaac across rooms and kills on contact# "
+      + "{{BossRoom}} Clear the Boss Room while the hunt is active to spawn a Quality 3+ item# "
+      + "The reward can come from any major item pool# "
+      + "{{Collectible}} If an extra life saves Isaac after being eaten, the anglerfish leaves for the floor and the reward is lost",
+  },
   quantumMoon: {
     idName: "Quantum Moon",
     quality: "Quality4",
@@ -109,6 +119,15 @@ export const eidDescriptions = {
       + "If you have The Attlerock, adds 3 temporary orbitals instead# "
       + "Temporary Attlerocks absorb enemy shots and fire rock tears",
   },
+  chertDrums: {
+    idName: "Chert's Drums",
+    quality: "Quality2",
+    description:
+      "Marks active enemies in the room for 8 seconds# "
+      + "{{Damage}} Marked enemies take +25% damage# "
+      + "{{Collectible}} With Ash Twin: +Speed and +Fire Rate during the analysis# "
+      + "{{Collectible}} With Ember Twin: +Damage, -Speed, and marked enemies take erosion damage",
+  },
   riebeckBanjo: {
     idName: "Riebeck's Banjo",
     quality: "Quality2",
@@ -127,6 +146,14 @@ export const eidDescriptions = {
       + "For 8 seconds, enemies become confused# "
       + "{{Collectible}} With Giant's Deep:# "
       + "Cyclones move chaotically and warp around the room",
+  },
+  solanumKeyboard: {
+    idName: "Solanum's Keyboard",
+    quality: "Quality3",
+    description:
+      "Plays one random memory from one of the main planets# "
+      + "Shows the chosen planet as a giantbook vision# "
+      + "Can heal, grant temporary stats/Wafer, open rifts, fire cyclones, fear enemies, create a wisp, or burst icy ghost matter",
   },
 } as const;
 
@@ -202,6 +229,16 @@ export const eidDescriptionsIta = {
       + "A 5 tocchi in chain, il danno scatta anche senza muro# "
       + "{{Luck}} Raramente spara un tifone verde enorme da 100 danni",
   },
+  darkBramble: {
+    idName: "Dark Bramble",
+    quality: "Quality3",
+    description:
+      "Dopo 45 secondi in ogni piano, una rana pescatrice inarrestabile inizia a inseguire Isaac# "
+      + "Segue Isaac tra le stanze e uccide al contatto# "
+      + "{{BossRoom}} Pulisci la Boss Room mentre la caccia e' attiva per generare un oggetto Quality 3+# "
+      + "Il premio puo' arrivare da qualsiasi pool principale# "
+      + "{{Collectible}} Se una vita extra salva Isaac dopo essere stato mangiato, la rana sparisce per il piano e il premio e' perso",
+  },
   quantumMoon: {
     idName: "Quantum Moon",
     quality: "Quality4",
@@ -241,6 +278,15 @@ export const eidDescriptionsIta = {
       + "Se hai The Attlerock, aggiunge invece 3 orbitanti temporanei# "
       + "Gli Attlerock temporanei assorbono colpi nemici e sparano lacrime di roccia",
   },
+  chertDrums: {
+    idName: "Chert's Drums",
+    quality: "Quality2",
+    description:
+      "Marchia i nemici attivi nella stanza per 8 secondi# "
+      + "{{Damage}} I nemici marchiati subiscono +25% danni# "
+      + "{{Collectible}} Con Ash Twin: +Velocita e +Fuoco durante l'analisi# "
+      + "{{Collectible}} Con Ember Twin: +Danno, -Velocita, e i nemici marchiati subiscono erosione",
+  },
   riebeckBanjo: {
     idName: "Riebeck's Banjo",
     quality: "Quality2",
@@ -259,5 +305,13 @@ export const eidDescriptionsIta = {
       + "Per 8 secondi, i nemici vengono confusi# "
       + "{{Collectible}} Con Giant's Deep:# "
       + "I cicloni si muovono caoticamente e si teletrasportano nella stanza",
+  },
+  solanumKeyboard: {
+    idName: "Solanum's Keyboard",
+    quality: "Quality3",
+    description:
+      "Suona una memoria casuale di uno dei pianeti principali# "
+      + "Mostra il pianeta scelto come visione giantbook# "
+      + "Puo curare, dare stats/Wafer temporanei, aprire rift, sparare cicloni, spaventare nemici, creare un wisp o generare ghost matter ghiacciata",
   },
 } as const;

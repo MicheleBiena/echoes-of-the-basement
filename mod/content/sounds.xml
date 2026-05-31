@@ -3,4 +3,39 @@
     <sample weight="1" path="timber_hearth_guitar.wav" />
     <sample weight="1" path="timber_hearth_guitar_muffled.wav" />
   </sound>
+  <sound name="Riebeck's Banjo">
+    <sample weight="1" path="banjo1.wav" />
+    <sample weight="1" path="banjo2.wav" />
+    <sample weight="1" path="banjo3.wav" />
+  </sound>
+  <sound name="Chert's Drums">
+    <sample weight="1" path="drums1.wav" />
+    <sample weight="1" path="drums2.wav" />
+    <sample weight="1" path="drums3.wav" />
+  </sound>
+  <sound name="Gabbro's Flute">
+    <sample weight="1" path="flute1.wav" />
+    <sample weight="1" path="flute2.wav" />
+    <sample weight="1" path="flute3.wav" />
+  </sound>
+  <sound name="Esker's Whistle">
+    <sample weight="1" path="whistle1.wav" />
+    <sample weight="1" path="whistle2.wav" />
+    <sample weight="1" path="whistle3.wav" />
+  </sound>
+  <sound name="Feldspar's Harmonica">
+    <sample weight="1" path="harmonica1.wav" />
+    <sample weight="1" path="harmonica2.wav" />
+    <sample weight="1" path="harmonica3.wav" />
+  </sound>
+  <sound name="Solanum's Keyboard">
+    <sample weight="1" path="keyboard1.wav" />
+    <sample weight="1" path="keyboard2.wav" />
+    <sample weight="1" path="keyboard3.wav" />
+  </sound>
+  <sound name="The Prisoner's Theremin">
+    <sample weight="1" path="theremin1.wav" />
+    <sample weight="1" path="theremin2.wav" />
+    <sample weight="1" path="theremin3.wav" />
+  </sound>
 </sounds>

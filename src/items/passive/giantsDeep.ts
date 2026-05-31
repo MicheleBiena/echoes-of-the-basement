@@ -7,6 +7,7 @@ import {
   ModCallback,
   SoundEffect,
   TearFlag,
+  TearVariant,
 } from "isaac-typescript-definitions";
 import {
   addFlag,
@@ -21,6 +22,7 @@ import {
   ModCallbackCustom,
   ModFeature,
   spawn,
+  spawnTear,
 } from "isaacscript-common";
 import { ITEM_IDS } from "../itemRegistry";
 
@@ -127,6 +129,9 @@ const GABBRO_CHAOS_WOBBLE_DEGREES = 18;
 const GABBRO_CHAOS_WOBBLE_SPEED = 0.24;
 const GABBRO_CHAOS_PARTICLE_COUNT = 2;
 const GABBRO_CHAOS_PARTICLE_SPEED = 2;
+const SOLANUM_CYCLONE_COUNT = 6;
+const SOLANUM_CYCLONE_SPEED = 4.5;
+const SOLANUM_CYCLONE_SPAWN_DISTANCE = 18;
 const ATTRACT_COLOR = Color(0.62, 0.5, 0.78, 1);
 const REPEL_COLOR = Color(0.48, 0.7, 0.55, 1);
 const REPEL_SLOW_COLOR = Color(0.5, 0.7, 0.55, 1);
@@ -310,6 +315,35 @@ export function activateGabbroCycloneChaos(
 ): void {
   player.GetData()[GIANTS_DEEP_GABBRO_CHAOS_UNTIL_FRAME_KEY] =
     Game().GetFrameCount() + durationFrames;
+}
+
+export function fireSolanumGiantsDeepCyclones(player: EntityPlayer): void {
+  for (let i = 0; i < SOLANUM_CYCLONE_COUNT; i++) {
+    const direction = Vector.FromAngle(math.random(0, 359));
+    const tear = spawnTear(
+      TearVariant.BLUE,
+      0,
+      player.Position.add(direction.mul(SOLANUM_CYCLONE_SPAWN_DISTANCE)),
+      direction.mul(SOLANUM_CYCLONE_SPEED),
+      player,
+    );
+    const polarity = getRandomPolarity();
+
+    tear.CollisionDamage = player.Damage;
+    tear.TearFlags = addFlag(tear.TearFlags, player.TearFlags);
+    tear.AddTearFlags(TearFlag.BOUNCE);
+    tear.Size *= CYCLONE_TEAR_COLLISION_SIZE_MULTIPLIER;
+    tear.ContinueVelocity = tear.Velocity;
+    setTearPolarity(tear, polarity);
+    if (polarity === REPEL_POLARITY) {
+      setRepelImpactDamage(tear, tear.CollisionDamage);
+    }
+    suspendCycloneTear(tear);
+    hideCycloneTear(tear);
+    spawnCycloneEffect(tear, polarity);
+  }
+
+  enforceActiveCycloneLimit();
 }
 
 function getRandomPolarity(): GiantsDeepPolarity {
