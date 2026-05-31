@@ -57,6 +57,10 @@ const GIANTS_DEEP_REPEL_LAUNCH_TEAR_HIT_PREFIX =
   "echoesOfTheBasementGiantsDeepRepelLaunchTearHit";
 const GIANTS_DEEP_REPEL_TEAR_LAUNCH_COOLDOWN_PREFIX =
   "echoesOfTheBasementGiantsDeepRepelTearLaunchCooldown";
+const GIANTS_DEEP_GABBRO_CHAOS_UNTIL_FRAME_KEY =
+  "echoesOfTheBasementGiantsDeepGabbroChaosUntilFrame";
+const GIANTS_DEEP_GABBRO_CHAOS_NEXT_WARP_FRAME_KEY =
+  "echoesOfTheBasementGiantsDeepGabbroChaosNextWarpFrame";
 const ATTRACT_POLARITY = "attract";
 const REPEL_POLARITY = "repel";
 const GIANTS_DEEP_CYCLONE_EFFECT_VARIANT = 9501 as EffectVariant;
@@ -114,6 +118,15 @@ const REPEL_CHAIN_SPLASH_RADIUS = 120;
 const REPEL_CHAIN_SPLASH_DAMAGE_MULTIPLIER = 0.35;
 const REPEL_EXPLOSIVE_SPLASH_RADIUS = 110;
 const REPEL_EXPLOSIVE_SPLASH_DAMAGE_MULTIPLIER = 0.45;
+const GABBRO_CHAOS_WARP_INTERVAL_MIN_FRAMES = 12;
+const GABBRO_CHAOS_WARP_INTERVAL_MAX_FRAMES = 22;
+const GABBRO_CHAOS_ROOM_MARGIN = 42;
+const GABBRO_CHAOS_MIN_SPEED = 3.5;
+const GABBRO_CHAOS_MAX_SPEED = 8;
+const GABBRO_CHAOS_WOBBLE_DEGREES = 18;
+const GABBRO_CHAOS_WOBBLE_SPEED = 0.24;
+const GABBRO_CHAOS_PARTICLE_COUNT = 2;
+const GABBRO_CHAOS_PARTICLE_SPEED = 2;
 const ATTRACT_COLOR = Color(0.62, 0.5, 0.78, 1);
 const REPEL_COLOR = Color(0.48, 0.7, 0.55, 1);
 const REPEL_SLOW_COLOR = Color(0.5, 0.7, 0.55, 1);
@@ -210,6 +223,7 @@ export class GiantsDeep extends ModFeature {
 
     suspendCycloneTear(tear);
     hideCycloneTear(tear);
+    applyGabbroCycloneChaos(tear);
     syncCycloneEffect(tear, polarity);
     if (isSuperTyphoon(tear)) {
       triggerSuperTyphoonBurst(tear);
@@ -290,6 +304,14 @@ export class GiantsDeep extends ModFeature {
   }
 }
 
+export function activateGabbroCycloneChaos(
+  player: EntityPlayer,
+  durationFrames: int,
+): void {
+  player.GetData()[GIANTS_DEEP_GABBRO_CHAOS_UNTIL_FRAME_KEY] =
+    Game().GetFrameCount() + durationFrames;
+}
+
 function getRandomPolarity(): GiantsDeepPolarity {
   return math.random() < ATTRACT_POLARITY_CHANCE
     ? ATTRACT_POLARITY
@@ -322,6 +344,90 @@ function getTearPolarity(tear: EntityTear): GiantsDeepPolarity | undefined {
 
 function getPolarityColor(polarity: GiantsDeepPolarity): Color {
   return polarity === ATTRACT_POLARITY ? ATTRACT_COLOR : REPEL_COLOR;
+}
+
+function applyGabbroCycloneChaos(tear: EntityTear): void {
+  const player = tear.SpawnerEntity?.ToPlayer();
+  if (player === undefined || !isGabbroCycloneChaosActive(player)) {
+    return;
+  }
+
+  const wobbleAngle =
+    math.sin(
+      (Game().GetFrameCount() + (tear.InitSeed % 60))
+        * GABBRO_CHAOS_WOBBLE_SPEED,
+    ) * GABBRO_CHAOS_WOBBLE_DEGREES;
+  tear.Velocity = getGabbroChaosVelocity(tear).Rotated(wobbleAngle);
+  tear.ContinueVelocity = tear.Velocity;
+
+  if (!shouldWarpGabbroCyclone(tear)) {
+    return;
+  }
+
+  const room = Game().GetRoom();
+  tear.Position = room.GetRandomPosition(GABBRO_CHAOS_ROOM_MARGIN);
+  tear.Velocity = Vector.FromAngle(math.random(0, 359)).mul(
+    getGabbroChaosSpeed(tear),
+  );
+  tear.ContinueVelocity = tear.Velocity;
+
+  Game().SpawnParticles(
+    tear.Position,
+    EffectVariant.WATER_RIPPLE,
+    GABBRO_CHAOS_PARTICLE_COUNT,
+    GABBRO_CHAOS_PARTICLE_SPEED,
+  );
+}
+
+function isGabbroCycloneChaosActive(player: EntityPlayer): boolean {
+  const activeUntilFrame =
+    player.GetData()[GIANTS_DEEP_GABBRO_CHAOS_UNTIL_FRAME_KEY];
+
+  return (
+    typeof activeUntilFrame === "number"
+    && Game().GetFrameCount() <= activeUntilFrame
+  );
+}
+
+function shouldWarpGabbroCyclone(tear: EntityTear): boolean {
+  const frameCount = Game().GetFrameCount();
+  const data = tear.GetData();
+  const nextWarpFrame = data[GIANTS_DEEP_GABBRO_CHAOS_NEXT_WARP_FRAME_KEY];
+
+  if (typeof nextWarpFrame === "number" && frameCount < nextWarpFrame) {
+    return false;
+  }
+
+  data[GIANTS_DEEP_GABBRO_CHAOS_NEXT_WARP_FRAME_KEY] =
+    frameCount
+    + math.random(
+      GABBRO_CHAOS_WARP_INTERVAL_MIN_FRAMES,
+      GABBRO_CHAOS_WARP_INTERVAL_MAX_FRAMES,
+    );
+
+  return true;
+}
+
+function getGabbroChaosVelocity(tear: EntityTear): Vector {
+  const velocity =
+    tear.Velocity.Length() > 0 ? tear.Velocity : tear.ContinueVelocity;
+
+  if (velocity.Length() > 0) {
+    return velocity.Normalized().mul(getGabbroChaosSpeed(tear));
+  }
+
+  return Vector.FromAngle(math.random(0, 359)).mul(GABBRO_CHAOS_MIN_SPEED);
+}
+
+function getGabbroChaosSpeed(tear: EntityTear): float {
+  return math.min(
+    GABBRO_CHAOS_MAX_SPEED,
+    math.max(
+      GABBRO_CHAOS_MIN_SPEED,
+      tear.Velocity.Length(),
+      tear.ContinueVelocity.Length(),
+    ),
+  );
 }
 
 function setSuperTyphoon(tear: EntityTear) {
@@ -670,6 +776,7 @@ function launchNPCFromRepelCyclone(tear: EntityTear, npc: EntityNPC) {
   const direction = getRepelLaunchDirection(tear, npc);
   const damage = getRepelImpactDamage(tear);
 
+  applyRepelCycloneContactDamage(tear, npc);
   setRepelLaunchState(npc, {
     direction,
     damage,
@@ -709,6 +816,7 @@ function boostRepelLaunchedNPCFromTear(
     tearFlags: addFlag(state.tearFlags, tear.TearFlags),
   };
 
+  applyRepelCycloneContactDamage(tear, npc);
   setRepelLaunchState(npc, nextState);
   markRepelLaunchTearHit(npc, tear, state.launchID);
   markRepelTearLaunchCooldown(tear, npc);
@@ -734,7 +842,7 @@ function updateRepelLaunchedNPC(npc: EntityNPC) {
 
   boostRepelLaunchedNPCFromNearbyTears(npc, state);
   const updatedState = getRepelLaunchState(npc) ?? state;
-  const {direction} = updatedState;
+  const { direction } = updatedState;
   const currentPosition = npc.Position;
   const nextPosition = currentPosition.add(direction.mul(REPEL_LAUNCH_SPEED));
   const clampedPosition = Game()
@@ -797,6 +905,15 @@ function finishRepelLaunchImpact(npc: EntityNPC, state: RepelLaunchState) {
     REPEL_IMPACT_PARTICLE_SPEED,
   );
   SFXManager().Play(SoundEffect.ROCK_CRUMBLE);
+}
+
+function applyRepelCycloneContactDamage(tear: EntityTear, npc: EntityNPC) {
+  npc.TakeDamage(
+    getRepelImpactDamage(tear),
+    DamageFlag.NO_MODIFIERS,
+    EntityRef(tear),
+    0,
+  );
 }
 
 function applyRepelImpactTearFlagEffects(
@@ -931,8 +1048,7 @@ function setRepelLaunchState(npc: EntityNPC, state: RepelLaunchState) {
   data[GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY] = state.damage;
   data[GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY] = state.multiplier;
   data[GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY] = state.bounceCount;
-  data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY] =
-    state.sourceTearSeed;
+  data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY] = state.sourceTearSeed;
   data[GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY] = state.tearFlags;
 }
 
@@ -944,8 +1060,7 @@ function getRepelLaunchState(npc: EntityNPC): RepelLaunchState | undefined {
   const damage = data[GIANTS_DEEP_REPEL_LAUNCH_DAMAGE_KEY];
   const multiplier = data[GIANTS_DEEP_REPEL_LAUNCH_MULTIPLIER_KEY];
   const bounceCount = data[GIANTS_DEEP_REPEL_LAUNCH_BOUNCE_COUNT_KEY];
-  const sourceTearSeed =
-    data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY];
+  const sourceTearSeed = data[GIANTS_DEEP_REPEL_LAUNCH_SOURCE_TEAR_SEED_KEY];
   const tearFlags = data[GIANTS_DEEP_REPEL_LAUNCH_TEAR_FLAGS_KEY];
 
   if (
@@ -1083,7 +1198,9 @@ function hasRepelLaunchHitGrid(
   }
 
   for (const position of samplePositions) {
-    if (isSolidGridCollision(Game().GetRoom().GetGridCollisionAtPos(position))) {
+    if (
+      isSolidGridCollision(Game().GetRoom().GetGridCollisionAtPos(position))
+    ) {
       return true;
     }
   }

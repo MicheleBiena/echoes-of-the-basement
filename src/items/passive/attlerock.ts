@@ -18,6 +18,7 @@ import {
   setSeed,
   spawnTear,
 } from "isaacscript-common";
+import { getEskerWhistleAttlerockCount } from "../../utils/eskerWhistleAttlerocks";
 import { ITEM_IDS } from "../itemRegistry";
 
 const { THE_ATTLEROCK } = ITEM_IDS;
@@ -58,7 +59,8 @@ export class Attlerock extends ModFeature {
     const effects = player.GetEffects();
     const count =
       effects.GetCollectibleEffectNum(THE_ATTLEROCK)
-      + player.GetCollectibleNum(THE_ATTLEROCK);
+      + player.GetCollectibleNum(THE_ATTLEROCK)
+      + getEskerWhistleAttlerockCount(player);
 
     const rng = RNG();
     const seed = getRandomSeed();

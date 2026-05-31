@@ -160,6 +160,9 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
 
+# Generated guides / PDFs
+*.pdf
+
 # AI-generated or reference files
 CODEBASE_REFERENCE.md
 *reference*.md

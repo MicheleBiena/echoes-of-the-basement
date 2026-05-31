@@ -5,7 +5,7 @@ import { ModCallbackRepentogon } from "isaac-typescript-definitions-repentogon";
 import type { ModUpgraded } from "isaacscript-common";
 import { ITEM_IDS, PLANETARIUM_ITEM_IDS } from "../itemRegistry";
 
-const PLANETARIUM_FORCE_CHANCE = 22;
+const PLANETARIUM_FORCE_CHANCE = 100;
 const BASE_MOD_ITEM_CHANCE = 0.5;
 const SPACESUIT_MOD_ITEM_CHANCE = 1; // 100% for testing
 

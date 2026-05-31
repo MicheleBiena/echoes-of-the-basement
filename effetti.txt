@@ -29,10 +29,11 @@ bordi della stanza verso il rift, come pezzi del pianeta che si staccano. Ha un
 limite di rift attivi e cooldown anti-spam.
 Giants Deep = Lacrime lentissime e rimbalzanti, visualizzate come cicloni.
 1 su 6: ciclone viola antiorario che attrae i nemici. Altrimenti, ciclone verde
-orario che non fa danno diretto, ma lancia violentemente i nemici che tocca nella
-direzione del tifone. Quando un nemico lanciato colpisce un muro o un elemento
-di grid, subisce danno pari al danno della lacrima. Se prima dell'impatto tocca
-altri cicloni verdi, il danno aumenta di +0.5x ogni volta, fino a un cap alto.
+orario che infligge il danno base della lacrima al contatto e lancia
+violentamente i nemici che tocca nella direzione del tifone. Quando un nemico
+lanciato colpisce un muro o un elemento di grid, subisce di nuovo danno pari al
+danno della lacrima. Se prima dell'impatto tocca altri cicloni verdi, il danno
+aumenta di +0.5x ogni volta, fino a un cap alto.
 Se la chain raggiunge 5 cicloni verdi toccati senza impatto, il danno viene
 inflitto comunque e il contatore si resetta.
 Il contatto diretto con i nemici viene convertito in lancio, ma la lacrima
@@ -71,15 +72,133 @@ attivi come wisps stile Book of Virtues se hanno un wisp valido, altrimenti
 fallback da definire. Le possibilita' scartate non danno bonus permanenti: sono
 potere fragile finche' i wisps sopravvivono.
 The Stranger =
-Interloper = Ogni 20 secondi lacrime di ghiaccio esplodono dal giocatore verso l'esterno che fanno
-dot di veleno che rallenta.
+Interloper = COMPLETO. Ogni 20 secondi in combattimento lacrime/frammenti di ghiaccio
+esplodono dal giocatore verso l'esterno. Sono ghost matter ghiacciata: infliggono
+danno, applicano veleno e slow, e hanno una piccola probabilita' di congelare.
+Se la stanza e' vuota non sprecano il cooldown: la raffica parte quando ci sono
+nemici attivi. Sprite aggiornato.
 
 
-*** ATTIVI ***
-1) Feldspar's Armonica
-2) Cherts' Drums
-3) Riebeck's Banjo
-4) Gabbro's Flute
-5) Solanum's Keyboard
-6) Esker's Whistle
-7) The Prisoner's Theremin
+*** DIREZIONE GENERALE ***
+
+Gli oggetti devono essere interessanti anche per chi non conosce Outer Wilds:
+prima devono funzionare come oggetti Isaac, poi avere identita' e flavor Outer
+Wilds. L'obiettivo principale non e' fare solo oggetti forti, ma run strane,
+memorabili e riconoscibili.
+
+I drawback non sono una regola fissa: alcuni pianeti li hanno per tema o
+bilanciamento, altri possono essere effetti diretti e puliti. La complessita'
+puo' variare: alcuni oggetti possono essere semplici se il tema lo richiede.
+
+Gli strumenti dei viaggiatori sono oggetti attivi. Devono sempre avere un effetto
+utile anche da soli. La sinergia con il pianeta corrispondente, quando esiste,
+si attiva all'uso dello strumento e deve essere evidente. Il charge segue la
+potenza dell'effetto, non per forza la lore.
+
+Gli strumenti possono stare almeno anche nello shop, oltre alle altre pool da
+definire. Il giocatore puo' usare uno strumento, lasciarlo a terra e sostituirlo
+con un altro active: il ricordo dello strumento suonato resta valido per la run.
+
+Da evitare come meccanica: loop temporale e supernova che chiude la run. Possono
+esistere come tema/lore, ma non come effetto giocabile normale.
+
+
+*** ATTIVI / STRUMENTI DEI VIAGGIATORI ***
+
+Feldspar's Harmonica = Feldspar / Dark Bramble.
+Active da avventuriero spericolato: dash tipo Mars, ma piu' cazzuto. Durante il
+dash Isaac si lancia in avanti, danneggia i nemici e puo' rompere elementi di
+grid. Se sbatte contro qualsiasi muro della stanza prova ad aprire un passaggio:
+secret, super secret e, per il meme di Feldspar, anche stanze rosse se possibile.
+In sinergia con Dark Bramble, la rana pescatrice si blocca per circa 40 secondi.
+
+Chert's Drums = Chert / Ember Twin, con possibile legame anche ad Ash Twin.
+Tema: astronomo, telescopio, analisi scientifica. Effetto ancora da definire:
+deve riguardare analisi di nemici, stanze o piano, piu' che una supernova.
+Possibili direzioni: marchiare nemici analizzati, rivelare informazioni del
+piano, rendere piu' prevedibile/pericoloso un evento futuro. La sinergia con
+Ember/Ash Twin puo' valorizzare il tema delle sabbie e delle statistiche.
+
+Riebeck's Banjo = COMPLETO. Riebeck / Brittle Hollow.
+Tema: protezione, paura del pericolo, zona stabile. La stanza di Riebeck su
+Brittle Hollow e' una delle poche aree sicure: non crolla nel buco nero, ha
+ossigeno e gravita' normale. Effetto base orientato alla difesa/stabilita'.
+All'uso crea per 8 secondi un campo stabile fisso nella posizione in cui Isaac
+ha usato l'attivo: e' un piccolo accampamento gravitazionale, non uno scudo
+personale. Il campo blocca i proiettili nemici che entrano nella sua area e ha
+feedback visivo con un anello/ombra pulsante. Isaac deve restare dentro per
+essere protetto. In sinergia con Brittle Hollow: finche' Isaac resta nel campo,
+le lacrime che colpiscono nemici forzano la creazione di rift al 100% quando
+possibile, rispettando cap e cooldown anti-spam.
+
+Gabbro's Flute = COMPLETO. Gabbro / Giant's Deep.
+Tema: caos chill. Gabbro resta sdraiato sull'amaca a suonare anche durante le
+tempeste di Giant's Deep. Inside joke community: Gabbro e' talmente chill che
+"si fa i cannoni". All'uso, la stanza diventa brevemente ondulata stile Wavy
+Cap. I nemici vengono confusi per 8 secondi. In sinergia con Giant's Deep: per
+la durata dell'effetto, i cicloni entrano nel caos, cambiano traiettoria e si
+teletrasportano continuamente in punti diversi della stanza.
+
+Solanum's Keyboard = Solanum / conoscenza Nomai del sistema.
+Questo e' l'unico strumento senza sinergia con il pianeta corrispondente. Non
+deve essere solo Quantum Moon: Solanum rappresenta vita/morte, stato quantico e
+conoscenza Nomai raccolta sui pianeti principali.
+
+All'uso richiama una memoria casuale di uno dei pianeti principali. Esclude The
+Attlerock perche' e' una luna/minore per i Nomai, ed esclude The Stranger perche'
+e' tema DLC separato. L'effetto e' uguale sia che il player possieda o non
+possieda il pianeta passivo relativo.
+
+Memorie possibili:
+- Timber Hearth: effetto di tepore/recupero, cura o piccolo supporto.
+- Ash Twin: boost temporaneo agile, speed/tears.
+- Ember Twin: +damage, -speed e effetto The Wafer temporaneo.
+- Brittle Hollow: crea un rift sotto un nemico.
+- Giant's Deep: genera 5/6 cicloni in direzioni casuali.
+- Dark Bramble: applica fear a tutti i nemici della stanza.
+- Quantum Moon: crea un wisp di uno degli oggetti nell'inventario.
+- Interloper: effetto ghiaccio/veleno, slow/poison e possibile freeze.
+
+All'attivazione deve apparire sopra Isaac il PNG del pianeta scelto, grande e in
+trasparenza, con fade breve. Inoltre useremo note musicali generiche che salgono
+da Isaac e un audio .wav dello strumento.
+
+EID: non deve parlare di The Stranger o The Attlerock. Deve dire solo che suona
+una memoria casuale di uno dei pianeti principali e attiva un effetto planetario.
+
+Esker's Whistle = COMPLETO. Esker / The Attlerock.
+Tema: base operativa, supporto da terra, anziano e un po' isolato sulla luna di
+Timber Hearth. Effetto base: aggiunge The Attlerock come orbitale temporaneo per
+la stanza. In sinergia con The Attlerock lo quadruplica contando quello che hai
+gia': invece di un singolo supporto temporaneo, genera tre Attlerock temporanei
+per la stanza. Il fischio usera' un file audio dedicato piu' avanti.
+
+The Prisoner's Theremin = The Prisoner / The Stranger.
+Da definire dopo The Stranger. Tema triste ma effetto pratico. The Prisoner e'
+imprigionato per aver voluto rivelare la verita' sull'Occhio dell'Universo alle
+specie future. Il flavor puo' essere malinconico, ma la meccanica non deve per
+forza essere un sacrificio.
+
+
+*** ENDING SEGRETO / TRAVELERS ***
+
+Ending completamente segreto. Durante una run, se il giocatore usa almeno una
+volta tutti e sette gli strumenti nella loro forma base, parte un ending custom.
+Gli strumenti possono essere poi scambiati con altri active: conta l'averli
+suonati almeno una volta nella run corrente.
+
+La memoria degli strumenti suonati resta valida finche' la run e' la stessa,
+quindi anche con vite extra tipo 9 Lives. Non deve contare se l'effetto viene
+copiato da Metronome o da meccaniche indirette: serve aver usato gli active veri.
+
+Quando viene suonato il settimo strumento, l'ending parte subito in qualsiasi
+stanza e interrompe tutto a schermo. La run si chiude.
+
+Sequenza desiderata:
+- Isaac bloccato al centro della stanza.
+- Nemici, proiettili e stanza congelati.
+- Parte la musica Travelers.
+- I PNG degli strumenti ruotano intorno a Isaac.
+- Alla fine della musica gli strumenti scompaiono uno alla volta.
+- Esplosione/flash di luce.
+- Titoli di coda o schermata ending custom.

@@ -32,6 +32,12 @@ import { TimberHearth } from "./items/passive/timberHearth";
 let renderWarningText = false;
 let warningFramesLeft = 0;
 
+interface EIDItemDescription {
+  readonly description: string;
+  readonly idName: string;
+  readonly quality?: string;
+}
+
 const modFeatures = [
   TimberHearth,
   Attlerock,
@@ -75,7 +81,7 @@ export function main(): void {
     >;
 
     for (const [_, item] of entries) {
-      EID.addCollectible(Isaac.GetItemIdByName(item.idName), item.description);
+      addEIDCollectibleDescription(item);
     }
 
     // Italian descriptions
@@ -87,23 +93,39 @@ export function main(): void {
     >;
 
     for (const [_, item] of entriesIta) {
-      EID.addCollectible(
-        Isaac.GetItemIdByName(item.idName),
-        item.description,
-        undefined,
-        "ita",
-      );
+      addEIDCollectibleDescription(item, "ita");
     }
   }
 }
 
+function addEIDCollectibleDescription(
+  item: EIDItemDescription,
+  language?: string,
+): void {
+  const description = getEIDDescriptionWithQuality(item);
+  EID?.addCollectible(
+    Isaac.GetItemIdByName(item.idName),
+    description,
+    undefined,
+    language,
+  );
+}
+
+function getEIDDescriptionWithQuality(item: EIDItemDescription): string {
+  if (item.quality === undefined) {
+    return item.description;
+  }
+
+  return `{{${item.quality}}} ${item.description}`;
+}
+
 function checkRepentogon() {
   if (isRepentogon()) {
-    Isaac.GetPlayer().AnimateHappy();
-  } else {
-    renderWarningText = true;
-    warningFramesLeft = 2400;
+    return;
   }
+
+  renderWarningText = true;
+  warningFramesLeft = 2400;
 }
 
 function renderWarning() {

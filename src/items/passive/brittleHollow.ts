@@ -30,7 +30,7 @@ const HOLLOW_FRAGMENT_TARGET_SEED_KEY =
 const HOLLOW_TARGET_COOLDOWN_KEY =
   "echoesOfTheBasementBrittleHollowTargetCooldown";
 const HOLLOW_EFFECT_VARIANT = EffectVariant.RIFT;
-const HOLLOW_SPAWN_CHANCE = 0.04;
+const HOLLOW_SPAWN_CHANCE = 0.08;
 const HOLLOW_MAX_ACTIVE_RIFTS = 3;
 const HOLLOW_GLOBAL_COOLDOWN_FRAMES = 10;
 const HOLLOW_TARGET_COOLDOWN_FRAMES = 45;
@@ -111,6 +111,14 @@ export class BrittleHollow extends ModFeature {
   }
 }
 
+export function forceSpawnBrittleHollowRift(target: EntityNPC): boolean {
+  if (!canForceSpawnHollow(target)) {
+    return false;
+  }
+
+  return spawnHollow(target);
+}
+
 function getBrittleHollowPlayerFromDamageSource(
   source: EntityRef,
 ): EntityPlayer | undefined {
@@ -134,6 +142,10 @@ function trySpawnHollow(target: EntityNPC) {
     return;
   }
 
+  spawnHollow(target);
+}
+
+function spawnHollow(target: EntityNPC): boolean {
   const effect = spawn(
     EntityType.EFFECT,
     HOLLOW_EFFECT_VARIANT,
@@ -142,7 +154,7 @@ function trySpawnHollow(target: EntityNPC) {
   ).ToEffect();
 
   if (effect === undefined) {
-    return;
+    return false;
   }
 
   markHollowEffect(effect);
@@ -159,6 +171,8 @@ function trySpawnHollow(target: EntityNPC) {
     false,
     HOLLOW_OPEN_SOUND_PITCH,
   );
+
+  return true;
 }
 
 function canSpawnHollow(target: EntityNPC) {
@@ -168,6 +182,14 @@ function canSpawnHollow(target: EntityNPC) {
     return false;
   }
 
+  if (getActiveHollowCount() >= HOLLOW_MAX_ACTIVE_RIFTS) {
+    return false;
+  }
+
+  return !isTargetOnHollowCooldown(target);
+}
+
+function canForceSpawnHollow(target: EntityNPC) {
   if (getActiveHollowCount() >= HOLLOW_MAX_ACTIVE_RIFTS) {
     return false;
   }
