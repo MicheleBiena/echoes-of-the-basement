@@ -1,7 +1,0 @@
-<music root="music/">
-  <track id="61" name="Title Screen" path="title screen.ogg" loop="true" />
-  <track id="62" name="Title Screen (Afterbirth)" path="title screen.ogg" loop="true" />
-  <track id="63" name="Title Screen (Repentance)" path="title screen.ogg" loop="true" />
-  <track id="64" name="Game start (jingle, twisted)" path="silent.ogg" loop="false" />
-  <track id="95" name="Game start (jingle)" path="silent.ogg" loop="false" />
-</music>
