@@ -162,8 +162,11 @@ vite.config.ts.timestamp-*
 
 # Generated guides / PDFs
 *.pdf
+GUIDA_MOD.md
 
 # AI-generated or reference files
+REFACTOR_PLAN.md
+refactor_plan.md
 CODEBASE_REFERENCE.md
 *reference*.md
 *ai*.md
