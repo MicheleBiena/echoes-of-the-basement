@@ -111,6 +111,16 @@ export const eidDescriptions = {
       "{{Planetarium}} Forces Planetarium chance to 100%# "
       + "{{Planetarium}} Planetariums always offer an available Echoes planetarium item",
   },
+  feldsparHarmonica: {
+    idName: "Feldspar's Harmonica",
+    quality: "Quality3",
+    description:
+      "Dash forward recklessly# "
+      + "{{Damage}} Crash through enemies for heavy damage# "
+      + "Breaks nearby rocks, fires and other breakable grid# "
+      + "Crashing into a wall opens hidden doors or creates a red room door if possible# "
+      + "{{Collectible}} With Dark Bramble: freezes the anglerfish for 40 seconds",
+  },
   eskerWhistle: {
     idName: "Esker's Whistle",
     quality: "Quality2",
@@ -269,6 +279,16 @@ export const eidDescriptionsIta = {
     description:
       "{{Planetarium}} Imposta la probabilita Planetario al 100%# "
       + "{{Planetarium}} I Planetari offrono sempre un oggetto Echoes disponibile",
+  },
+  feldsparHarmonica: {
+    idName: "Feldspar's Harmonica",
+    quality: "Quality3",
+    description:
+      "Scatta in avanti senza paura# "
+      + "{{Damage}} Travolge i nemici infliggendo molti danni# "
+      + "Rompe rocce, fuochi e altri elementi di grid vicini# "
+      + "Schiantarsi contro un muro apre porte segrete o crea una porta rossa se possibile# "
+      + "{{Collectible}} Con Dark Bramble: blocca la rana pescatrice per 40 secondi",
   },
   eskerWhistle: {
     idName: "Esker's Whistle",

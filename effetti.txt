@@ -134,12 +134,14 @@ esistere come tema/lore, ma non come effetto giocabile normale.
 
 *** ATTIVI / STRUMENTI DEI VIAGGIATORI ***
 
-Feldspar's Harmonica = Feldspar / Dark Bramble.
-Active da avventuriero spericolato: dash tipo Mars, ma piu' cazzuto. Durante il
-dash Isaac si lancia in avanti, danneggia i nemici e puo' rompere elementi di
-grid. Se sbatte contro qualsiasi muro della stanza prova ad aprire un passaggio:
-secret, super secret e, per il meme di Feldspar, anche stanze rosse se possibile.
-In sinergia con Dark Bramble, la rana pescatrice si blocca per circa 40 secondi.
+Feldspar's Harmonica = COMPLETO. Feldspar / Dark Bramble.
+Active a 4 cariche da avventuriero spericolato: dash tipo Mars, ma piu'
+cazzuto. Durante il dash Isaac si lancia in avanti, danneggia pesantemente i
+nemici, li spinge via e rompe elementi di grid vicini. Se sbatte contro
+qualsiasi muro della stanza prova ad aprire un passaggio: secret, super secret e,
+per il meme di Feldspar, anche stanze rosse se possibile tramite red room door.
+In sinergia con Dark Bramble, la rana pescatrice si blocca per circa 40 secondi
+e non uccide al contatto mentre e' congelata.
 
 Chert's Drums = COMPLETO. Chert / Ember Twin, con legame anche ad Ash Twin.
 Tema: astronomo, telescopio, analisi scientifica. Active a 3 cariche. All'uso

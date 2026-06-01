@@ -51,9 +51,10 @@
     quality="3" />
 
   <active id="12" name="Feldspar's Harmonica"
-    description="Placeholder - Feldspar's Harmonica"
+    description="Crash through."
     gfx="feldspar_harmonica.png"
-    maxcharges="1" />
+    maxcharges="4"
+    quality="3" />
   <active id="13" name="Chert's Drums"
     description="Read the stars."
     gfx="chert_drums.png"

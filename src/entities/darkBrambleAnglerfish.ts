@@ -12,6 +12,7 @@ const DARK_BRAMBLE_ANGLERFISH_NAME = "Dark Bramble Anglerfish";
 const DARK_BRAMBLE_ANGLERFISH_SPRITE =
   "gfx/monsters/darkBrambleAnglerfish.anm2";
 const DARK_BRAMBLE_ANGLERFISH_ANIMATION = "Float";
+const DARK_BRAMBLE_ANGLERFISH_FROZEN_FRAME = 18;
 const DARK_BRAMBLE_ANGLERFISH_CONSOLE_COMMAND = "eotb_anglerfish";
 const DARK_BRAMBLE_ANGLERFISH_INITIALIZED_KEY =
   "echoesOfTheBasementDarkBrambleAnglerfishInitialized";
@@ -24,15 +25,26 @@ const DARK_BRAMBLE_ANGLERFISH_DRAG = 0.965;
 const DARK_BRAMBLE_ANGLERFISH_TOUCH_DAMAGE = 999;
 const DARK_BRAMBLE_ANGLERFISH_TOUCH_DAMAGE_FLAGS = (DamageFlag.NO_PENALTIES
   | DamageFlag.IGNORE_ARMOR) as BitFlags<DamageFlag>;
-const DARK_BRAMBLE_ANGLERFISH_TOUCH_RADIUS = 30;
+const DARK_BRAMBLE_ANGLERFISH_TOUCH_RADIUS = 38;
+const DARK_BRAMBLE_ANGLERFISH_COLLISION_SIZE = 28;
 const DARK_BRAMBLE_ANGLERFISH_SPAWN_OFFSET = Vector(90, 0);
+const DARK_BRAMBLE_ANGLERFISH_SCALE = 1.35;
 const DARK_BRAMBLE_ANGLERFISH_SPRITE_OFFSET = Vector(0, -14);
+const DARK_BRAMBLE_ANGLERFISH_SPRITE_SCALE = Vector(
+  DARK_BRAMBLE_ANGLERFISH_SCALE,
+  DARK_BRAMBLE_ANGLERFISH_SCALE,
+);
+const DARK_BRAMBLE_ANGLERFISH_SLEEP_FLOAT_AMPLITUDE = 5;
+const DARK_BRAMBLE_ANGLERFISH_SLEEP_FLOAT_SPEED = 0.08;
 const DARK_BRAMBLE_ANGLERFISH_DEPTH_OFFSET = 25;
 const DARK_BRAMBLE_ANGLERFISH_GHOST_COLOR = Color(0.7, 0.85, 1, 0.82);
+const DARK_BRAMBLE_ANGLERFISH_FROZEN_COLOR = Color(0.45, 0.75, 1.25, 0.75);
 
 export const DARK_BRAMBLE_ANGLERFISH_TYPE = Isaac.GetEntityTypeByName(
   DARK_BRAMBLE_ANGLERFISH_NAME,
 ) as EntityType;
+
+let anglerfishFrozenUntilFrame = 0;
 
 export class DarkBrambleAnglerfish extends ModFeature {
   @Callback(ModCallback.POST_NPC_INIT, DARK_BRAMBLE_ANGLERFISH_TYPE)
@@ -52,6 +64,14 @@ export class DarkBrambleAnglerfish extends ModFeature {
 
     setupAnglerfish(npc);
     updateAnglerfishSprite(npc);
+    applyAnglerfishSize(npc);
+    if (isAnglerfishFrozen()) {
+      npc.Velocity = Vector(0, 0);
+      applyAnglerfishFrozenPose(npc);
+      applyAnglerfishFrozenVisual(npc, 2, false);
+      return;
+    }
+
     damageTouchingPlayers(npc);
 
     const target = getClosestPlayer(npc.Position);
@@ -82,6 +102,10 @@ export class DarkBrambleAnglerfish extends ModFeature {
   ): boolean | undefined {
     if (!isDarkBrambleAnglerfish(npc)) {
       return undefined;
+    }
+
+    if (isAnglerfishFrozen()) {
+      return true;
     }
 
     const player = collider.ToPlayer();
@@ -122,7 +146,7 @@ export class DarkBrambleAnglerfish extends ModFeature {
 export function spawnDarkBrambleAnglerfish(
   position: Vector,
 ): EntityNPC | undefined {
-  return Isaac.Spawn(
+  const npc = Isaac.Spawn(
     DARK_BRAMBLE_ANGLERFISH_TYPE,
     0,
     0,
@@ -130,6 +154,16 @@ export function spawnDarkBrambleAnglerfish(
     Vector(0, 0),
     undefined,
   ).ToNPC();
+
+  if (npc !== undefined && isAnglerfishFrozen()) {
+    setupAnglerfish(npc);
+    applyAnglerfishSize(npc);
+    applyAnglerfishFrozenPose(npc);
+    npc.Velocity = Vector(0, 0);
+    applyAnglerfishFrozenVisual(npc, 12, true);
+  }
+
+  return npc;
 }
 
 export function getDarkBrambleAnglerfish(): EntityNPC[] {
@@ -153,6 +187,23 @@ export function removeDarkBrambleAnglerfish(): void {
   }
 }
 
+export function freezeDarkBrambleAnglerfish(durationFrames: int): void {
+  const currentFrame = Game().GetFrameCount();
+
+  if (!isAnglerfishFrozen()) {
+    anglerfishFrozenUntilFrame = currentFrame + durationFrames;
+  }
+
+  for (const npc of getDarkBrambleAnglerfish()) {
+    npc.Velocity = Vector(0, 0);
+    applyAnglerfishFrozenVisual(npc, 12, true);
+  }
+}
+
+export function clearDarkBrambleAnglerfishFreeze(): void {
+  anglerfishFrozenUntilFrame = 0;
+}
+
 function setupAnglerfish(npc: EntityNPC | undefined): void {
   if (npc === undefined) {
     return;
@@ -161,7 +212,7 @@ function setupAnglerfish(npc: EntityNPC | undefined): void {
   npc.CanShutDoors = false;
   npc.EntityCollisionClass = EntityCollisionClass.PLAYER_ONLY;
   npc.GridCollisionClass = EntityGridCollisionClass.NONE;
-  npc.SpriteOffset = DARK_BRAMBLE_ANGLERFISH_SPRITE_OFFSET;
+  applyAnglerfishSize(npc);
   npc.DepthOffset = DARK_BRAMBLE_ANGLERFISH_DEPTH_OFFSET;
   npc.Friction = 1;
   npc.Mass = 999;
@@ -199,6 +250,51 @@ function updateAnglerfishSprite(npc: EntityNPC): void {
   }
 
   npc.SetColor(DARK_BRAMBLE_ANGLERFISH_GHOST_COLOR, 2, 0, false, false);
+}
+
+function applyAnglerfishSize(npc: EntityNPC): void {
+  npc.Scale = DARK_BRAMBLE_ANGLERFISH_SCALE;
+  npc.Size = DARK_BRAMBLE_ANGLERFISH_COLLISION_SIZE;
+  npc.SpriteScale = DARK_BRAMBLE_ANGLERFISH_SPRITE_SCALE;
+  npc.SpriteOffset = DARK_BRAMBLE_ANGLERFISH_SPRITE_OFFSET;
+}
+
+function applyAnglerfishFrozenPose(npc: EntityNPC): void {
+  const sprite = npc.GetSprite();
+
+  sprite.SetFrame(
+    DARK_BRAMBLE_ANGLERFISH_ANIMATION,
+    DARK_BRAMBLE_ANGLERFISH_FROZEN_FRAME,
+  );
+  sprite.Stop();
+  npc.SpriteOffset = getAnglerfishSleepFloatOffset(npc);
+}
+
+function getAnglerfishSleepFloatOffset(npc: EntityNPC): Vector {
+  const phase = (Game().GetFrameCount() + (npc.InitSeed % 60))
+    * DARK_BRAMBLE_ANGLERFISH_SLEEP_FLOAT_SPEED;
+  const floatOffset =
+    math.sin(phase) * DARK_BRAMBLE_ANGLERFISH_SLEEP_FLOAT_AMPLITUDE;
+
+  return DARK_BRAMBLE_ANGLERFISH_SPRITE_OFFSET.add(Vector(0, floatOffset));
+}
+
+function isAnglerfishFrozen(): boolean {
+  return Game().GetFrameCount() <= anglerfishFrozenUntilFrame;
+}
+
+function applyAnglerfishFrozenVisual(
+  npc: EntityNPC,
+  duration: int,
+  share: boolean,
+): void {
+  npc.SetColor(
+    DARK_BRAMBLE_ANGLERFISH_FROZEN_COLOR,
+    duration,
+    0,
+    share,
+    false,
+  );
 }
 
 function damageTouchingPlayers(npc: EntityNPC): void {

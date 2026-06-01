@@ -19,6 +19,7 @@ import {
 } from "isaacscript-common";
 import {
   DARK_BRAMBLE_ANGLERFISH_ATE_PLAYER_KEY,
+  clearDarkBrambleAnglerfishFreeze,
   getDarkBrambleAnglerfish,
   removeDarkBrambleAnglerfish,
   spawnDarkBrambleAnglerfish,
@@ -130,12 +131,14 @@ function resetDarkBrambleFloorState(): void {
   isAnglerfishActiveThisFloor = false;
   isAnglerfishRewardLostThisFloor = false;
   isAnglerfishRewardSpawnedThisFloor = false;
+  clearDarkBrambleAnglerfishFreeze();
   clearAnglerfishAtePlayerFlags();
   removeDarkBrambleAnglerfish();
 }
 
 function stopDarkBrambleHunt(): void {
   isAnglerfishActiveThisFloor = false;
+  clearDarkBrambleAnglerfishFreeze();
   removeDarkBrambleAnglerfish();
 }
 
@@ -212,6 +215,7 @@ function spawnDarkBrambleReward(): void {
 
   isAnglerfishRewardSpawnedThisFloor = true;
   isAnglerfishActiveThisFloor = false;
+  clearDarkBrambleAnglerfishFreeze();
   removeDarkBrambleAnglerfish();
 }
 
